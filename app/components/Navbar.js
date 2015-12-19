@@ -53,12 +53,6 @@ class Navbar extends React.Component {
   }
 
   render() {
-
-    var inputForm = 'navbar-form navbar-left animated';
-    if (this.state.shake){
-      inputForm += ' shake';
-    }
-
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>

@@ -39,25 +39,10 @@ class Home extends React.Component {
         </div>
       );
     });
-    var header;
-    if (this.state.profileImgs.length > 0){
-      header = <div></div>;
-    } else {
-      header = <h1 className='text-center'>Search for an Email. Receive gifs yak.</h1>;
-    }
-
-    // var allemails = window.localStorage.getItem('allemails').split(",");
-    // var emails = allemails.map((email,idx) => {
-    //   return (
-    //     <div className='emails'>
-    //       <p>{email}</p>
-    //     </div>
-    //   );
-    // });
 
     return (
       <div className='container'>
-        {header}
+        <h1 className='text-center'>Search for an Email. Receive gifs yak.</h1>;
         <div className='row'>
           {profileImgs}
         </div>
@@ -67,4 +52,3 @@ class Home extends React.Component {
 }
 
 export default Home;
-a
