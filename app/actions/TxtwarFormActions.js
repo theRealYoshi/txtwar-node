@@ -4,6 +4,8 @@ import {assign} from 'underscore';
 class TxtwarFormActions {
   constructor() {
     this.generateActions(
+      'updateSearchQuery',
+      'updateAjaxAnimation'
     );
   }
 }

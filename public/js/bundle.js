@@ -95,7 +95,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var TxtwarFormActions = function TxtwarFormActions() {
   _classCallCheck(this, TxtwarFormActions);
 
-  this.generateActions();
+  this.generateActions('updateSearchQuery', 'updateAjaxAnimation');
 };
 
 exports.default = _alt2.default.createActions(TxtwarFormActions);
@@ -552,20 +552,93 @@ var TxtwarForm = (function (_React$Component) {
   function TxtwarForm(props) {
     _classCallCheck(this, TxtwarForm);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(TxtwarForm).call(this, props));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TxtwarForm).call(this, props));
+
+    _this.state = _TxtwarFormStore2.default.getState();
+    _this._onChange = _this._onChange.bind(_this);
+
+    return _this;
   }
 
   _createClass(TxtwarForm, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _TxtwarFormStore2.default.listen(this._onChange);
+
+      $(document).ajaxStart(function () {
+        _TxtwarFormStore2.default.updateAjaxAnimation('fadeIn');
+      });
+
+      $(document).ajaxComplete(function () {
+        setTimeout(function () {
+          _TxtwarFormStore2.default.updateAjaxAnimation('fadeOut');
+        }, 2000);
+      });
+    }
+  }, {
+    key: '_onChange',
+    value: function _onChange(state) {
+      this.setState(state);
+    }
+  }, {
+    key: '_handleSubmit',
+    value: function _handleSubmit(event) {
+      event.preventDefault();
+      // if validated
+      // save to database
+    }
+  }, {
+    key: '_checkValidation',
+    value: function _checkValidation() {
+      // route to twilio api once all numbers are fulfilled
+      // toastr error with only numbers
+    }
+  }, {
+    key: '_onKeypressEvent',
+    value: function _onKeypressEvent() {}
+  }, {
+    key: '_formattedNumber',
+    value: function _formattedNumber() {
+      var numStr = this.state.searchQuery.toString().split("");
+      for (var i = 0; i < numStr.length; i++) {}
+      return this.state.searchQuery;
+    }
+
+    //add debounce
+
+  }, {
     key: 'render',
     value: function render() {
+      var phoneNumber;
+      if (this.state.searchQuery) {
+        phoneNumber = this._formattedNumber();
+      } else {
+        phoneNumber = "";
+      }
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'p',
-          null,
-          'TXTWAR'
-        )
+          'form',
+          { ref: 'searchForm', className: 'navbar-form navbar-left animated', onSubmit: this._handleSubmit.bind(this) },
+          _react2.default.createElement(
+            'div',
+            { className: 'input-group' },
+            _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: '(000)-000-0000',
+              value: phoneNumber, onChange: _TxtwarFormActions2.default.updateSearchQuery,
+              maxLength: '14' }),
+            _react2.default.createElement(
+              'span',
+              { className: 'input-group-btn' },
+              _react2.default.createElement(
+                'button',
+                { className: 'btn btn-default', onClick: this._handleSubmit.bind(this) },
+                _react2.default.createElement('span', { className: 'glyphicon glyphicon-phone' })
+              )
+            )
+          )
+        ),
+        '//keypad here'
       );
     }
   }]);
@@ -759,6 +832,8 @@ exports.default = _alt2.default.createStore(NavbarStore);
 },{"../actions/NavbarActions":2,"../alt":4}],14:[function(require,module,exports){
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -775,11 +850,33 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TxtwarFormStore = function TxtwarFormStore() {
-  _classCallCheck(this, TxtwarFormStore);
+var TxtwarFormStore = (function () {
+  function TxtwarFormStore() {
+    _classCallCheck(this, TxtwarFormStore);
 
-  this.bindActions(_TxtwarFormActions2.default);
-};
+    this.bindActions(_TxtwarFormActions2.default);
+    this.searchQuery = '';
+  }
+
+  _createClass(TxtwarFormStore, [{
+    key: 'onUpdateAjaxAnimation',
+    value: function onUpdateAjaxAnimation(className) {
+      this.ajaxAnimationClass = className; //fadein or fadeout
+    }
+  }, {
+    key: 'onUpdateSearchQuery',
+    value: function onUpdateSearchQuery(event) {
+      if (isNaN(event.target.value)) {
+        toastr.error("please enter numbers only");
+      } else {
+        this.searchQuery = event.target.value;
+      }
+      console.log(this.searchQuery);
+    }
+  }]);
+
+  return TxtwarFormStore;
+})();
 
 exports.default = _alt2.default.createStore(TxtwarFormStore);
 
