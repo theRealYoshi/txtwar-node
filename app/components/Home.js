@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router';
 import HomeStore from '../stores/HomeStore';
-import NavbarStore from '../stores/NavbarStore';
 import HomeActions from '../actions/HomeActions';
+import TxtwarForm from './TxtwarForm';
 import {first, without, findWhere} from 'underscore';
 
 class Home extends React.Component {
@@ -32,19 +32,12 @@ class Home extends React.Component {
   }
 
   render() {
-    var profileImgs = this.state.profileImgs.map((imgSrc, idx) => {
-      return (
-        <div className='col-xs-6 .col-md-4 flipInX animated'>
-          <ImageTag src={imgSrc} className="giphy-image"/>
-        </div>
-      );
-    });
 
     return (
       <div className='container'>
-        <h1 className='text-center'>Search for an Email. Receive gifs yak.</h1>;
+        <h1 className='text-center'>Enter your phone number</h1>;
         <div className='row'>
-          {profileImgs}
+          <TxtwarForm />
         </div>
       </div>
     );

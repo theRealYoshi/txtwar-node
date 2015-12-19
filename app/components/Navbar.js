@@ -67,7 +67,7 @@ class Navbar extends React.Component {
           </Link>
         </div>
         <div id='navbar' className='navbar-collapse collapse'>
-          <button className='btn btn-default clear' onClick={this.handleReRender}>Clear Search</button>
+          <Link to="http://txtwar.com" onClick={this.handleReRender}>Txtwar</Link>
         </div>
       </nav>
     );
