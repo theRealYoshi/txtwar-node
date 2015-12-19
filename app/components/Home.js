@@ -9,16 +9,16 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = NavbarStore.getState();
+    this.state = HomeStore.getState();
     this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
-    NavbarStore.listen(this.onChange);
+    HomeStore.listen(this.onChange);
   }
 
   componentWillUnmount() {
-    NavbarStore.unlisten(this.onChange);
+    HomeStore.unlisten(this.onChange);
   }
 
   onChange(state) {
@@ -35,7 +35,7 @@ class Home extends React.Component {
 
     return (
       <div className='container'>
-        <h1 className='text-center'>Enter your phone number</h1>;
+        <h1 className='text-center'>Enter your phone number</h1>
         <div className='row'>
           <TxtwarForm />
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
+import Home from './Home';
 import TxtwarForm from './TxtwarForm';
 import Footer from './Footer';
 

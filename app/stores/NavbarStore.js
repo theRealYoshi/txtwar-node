@@ -5,8 +5,6 @@ class NavbarStore {
   constructor() {
     this.bindActions(NavbarActions);
     this.profileImgs = [];
-    this.totalCharacters = 0;
-    this.onlineUsers = 0;
     this.searchQuery = '';
     this.ajaxAnimationClass = '';
     this.shake = false;

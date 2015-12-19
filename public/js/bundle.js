@@ -132,6 +132,10 @@ var _Navbar = require('./Navbar');
 
 var _Navbar2 = _interopRequireDefault(_Navbar);
 
+var _Home = require('./Home');
+
+var _Home2 = _interopRequireDefault(_Home);
+
 var _TxtwarForm = require('./TxtwarForm');
 
 var _TxtwarForm2 = _interopRequireDefault(_TxtwarForm);
@@ -175,7 +179,7 @@ var App = (function (_React$Component) {
 
 exports.default = App;
 
-},{"./Footer":6,"./Navbar":8,"./TxtwarForm":9,"react":"react"}],6:[function(require,module,exports){
+},{"./Footer":6,"./Home":7,"./Navbar":8,"./TxtwarForm":9,"react":"react"}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -322,7 +326,7 @@ var Home = (function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
-    _this.state = NavbarStore.getState();
+    _this.state = _HomeStore2.default.getState();
     _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
@@ -330,12 +334,12 @@ var Home = (function (_React$Component) {
   _createClass(Home, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      NavbarStore.listen(this.onChange);
+      _HomeStore2.default.listen(this.onChange);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      NavbarStore.unlisten(this.onChange);
+      _HomeStore2.default.unlisten(this.onChange);
     }
   }, {
     key: 'onChange',
@@ -361,7 +365,6 @@ var Home = (function (_React$Component) {
           { className: 'text-center' },
           'Enter your phone number'
         ),
-        ';',
         _react2.default.createElement(
           'div',
           { className: 'row' },
@@ -543,8 +546,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TxtwarForm = (function (_React$component) {
-  _inherits(TxtwarForm, _React$component);
+var TxtwarForm = (function (_React$Component) {
+  _inherits(TxtwarForm, _React$Component);
 
   function TxtwarForm(props) {
     _classCallCheck(this, TxtwarForm);
@@ -568,7 +571,7 @@ var TxtwarForm = (function (_React$component) {
   }]);
 
   return TxtwarForm;
-})(_react2.default.component);
+})(_react2.default.Component);
 
 exports.default = TxtwarForm;
 
@@ -688,8 +691,6 @@ var NavbarStore = (function () {
 
     this.bindActions(_NavbarActions2.default);
     this.profileImgs = [];
-    this.totalCharacters = 0;
-    this.onlineUsers = 0;
     this.searchQuery = '';
     this.ajaxAnimationClass = '';
     this.shake = false;
