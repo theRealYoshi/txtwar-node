@@ -32,13 +32,19 @@ class TxtwarForm extends React.Component  {
 
   _handleSubmit(event) {
     event.preventDefault();
+    if (this.state.searchQuery.length === 10){
+      TxtwarFormActions.validateTwilioNumber({
+        phonenumber: this.state.searchQuery
+      });
+    } else {
+      TxtwarFormActions.validateTwilioNumberFail();
+    }
     // if validated
     // save to database
   }
 
   _checkValidation(){
     // route to twilio api once all numbers are fulfilled
-    // toastr error with only numbers
   }
 
   _onKeypressEvent(){
@@ -46,19 +52,16 @@ class TxtwarForm extends React.Component  {
   }
 
   _formattedNumber() {
-    var numStr = this.state.searchQuery;
+    var numStr = this.state.searchQuery.toString();
     //regex for different formats and then add 000's until end
     if (numStr.length <= 3){
       return "(" + numStr;
     } else if (numStr.length > 3 && numStr.length < 7){
-      console.log(numStr);
-      return "(" + numStr.toString().slice(0,3) + ")-" + numStr.toString().slice(3);
+      return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3);
     } else {
-      console.log(numStr);
-      return "(" + numStr.toString().slice(0,3) + ")-" + numStr.toString().slice(3,6) + "-" + numStr.toString().slice(6);
+      return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3,6) + "-" + numStr.slice(6);
     }
   }
-
   //add debounce
 
   render() {

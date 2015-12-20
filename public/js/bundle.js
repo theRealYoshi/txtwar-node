@@ -78,6 +78,8 @@ exports.default = _alt2.default.createActions(NavbarActions);
 },{"../alt":4,"underscore":"underscore"}],3:[function(require,module,exports){
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -92,11 +94,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TxtwarFormActions = function TxtwarFormActions() {
-  _classCallCheck(this, TxtwarFormActions);
+var TxtwarFormActions = (function () {
+  function TxtwarFormActions() {
+    _classCallCheck(this, TxtwarFormActions);
 
-  this.generateActions('updateSearchQuery', 'updateAjaxAnimation');
-};
+    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'validateTwilioNumber', 'validateTwilioNumberFail');
+  }
+
+  _createClass(TxtwarFormActions, [{
+    key: 'validateTwilioNumber',
+    value: function validateTwilioNumber(payload) {
+      $.ajax({
+        url: '/api/twiliovalidation',
+        data: { phonenumber: payload.phonenumber }
+      }).done(function (data) {
+        //set state to true
+        console.log("api call success");
+      }).fail(function (data) {
+        console.log("api call fail");
+      });
+    }
+  }]);
+
+  return TxtwarFormActions;
+})();
 
 exports.default = _alt2.default.createActions(TxtwarFormActions);
 
@@ -584,6 +605,13 @@ var TxtwarForm = (function (_React$Component) {
     key: '_handleSubmit',
     value: function _handleSubmit(event) {
       event.preventDefault();
+      if (this.state.searchQuery.length === 10) {
+        _TxtwarFormActions2.default.validateTwilioNumber({
+          phonenumber: this.state.searchQuery
+        });
+      } else {
+        _TxtwarFormActions2.default.validateTwilioNumberFail();
+      }
       // if validated
       // save to database
     }
@@ -591,7 +619,6 @@ var TxtwarForm = (function (_React$Component) {
     key: '_checkValidation',
     value: function _checkValidation() {
       // route to twilio api once all numbers are fulfilled
-      // toastr error with only numbers
     }
   }, {
     key: '_onKeypressEvent',
@@ -599,19 +626,16 @@ var TxtwarForm = (function (_React$Component) {
   }, {
     key: '_formattedNumber',
     value: function _formattedNumber() {
-      var numStr = this.state.searchQuery;
+      var numStr = this.state.searchQuery.toString();
       //regex for different formats and then add 000's until end
       if (numStr.length <= 3) {
         return "(" + numStr;
       } else if (numStr.length > 3 && numStr.length < 7) {
-        console.log(numStr);
-        return "(" + numStr.toString().slice(0, 3) + ")-" + numStr.toString().slice(3);
+        return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3);
       } else {
-        console.log(numStr);
-        return "(" + numStr.toString().slice(0, 3) + ")-" + numStr.toString().slice(3, 6) + "-" + numStr.toString().slice(6);
+        return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3, 6) + "-" + numStr.slice(6);
       }
     }
-
     //add debounce
 
   }, {
@@ -877,10 +901,18 @@ var TxtwarFormStore = (function () {
       var searchQuery = event.target.value.replace(/[^\d]/g, "");
       console.log(searchQuery);
       if (isNaN(searchQuery)) {
-        toastr.error("please enter numbers only");
+        toastr.error("Please enter numbers only");
       } else {
         this.searchQuery = searchQuery;
       }
+    }
+  }, {
+    key: 'onValidateTwilioNumber',
+    value: function onValidateTwilioNumber() {}
+  }, {
+    key: 'onValidateTwilioNumberFail',
+    value: function onValidateTwilioNumberFail() {
+      toastr.error("Please enter a valid phone number");
     }
   }]);
 

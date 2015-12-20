@@ -19,6 +19,14 @@ var Router = require('react-router');
 var routes = require('./app/routes');
 var config = require('./config');
 
+//twilio
+var accountSid = 'AC2b10c047fd90d4d0c6455d223f33f8d5';
+// hash this or store this somewhere
+//var authToken = '{{ auth_token }}';
+var authToken = '5ce83d92939d9515db965143bc113b78';
+var LookupsClient = require('twilio').LookupsClient;
+var twilioLookupClient = new LookupsClient(accountSid, authToken);
+
 // Redis
 if (process.env.REDISTOGO_URL) {
     var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -49,13 +57,19 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
 /**
- * GET /api/phonenumbers
+ * GET /api/phonenumbers/twiliovalidation
  * assigns random search tag to email caches result
  */
 
-app.get("/api/phonenumbers", function(req, res, next) {
-  console.log("success");
+app.get("/api/phonenumbers/", function(req, res, next) {
+  console.log("here");
+  var phoneNumber = req.body.phonenumber;
+  twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
+    console.log("success");
+    console.log(number);
+  })
 });
 
 app.use(function(req, res) {

@@ -15,10 +15,17 @@ class TxtwarFormStore {
     var searchQuery = event.target.value.replace(/[^\d]/g,"");
     console.log(searchQuery);
     if(isNaN(searchQuery)){
-      toastr.error("please enter numbers only");
+      toastr.error("Please enter numbers only");
     } else {
       this.searchQuery = searchQuery;
     }
+  }
+  onValidateTwilioNumber(){
+
+  }
+
+  onValidateTwilioNumberFail(){
+    toastr.error("Please enter a valid phone number");
   }
 
 }
