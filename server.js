@@ -12,6 +12,7 @@ var xml2js = require('xml2js');
 var mongoose = require('mongoose');
 var Character = require('./models/phonenumbers.js');
 
+
 var swig  = require('swig');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
@@ -22,7 +23,6 @@ var config = require('./config');
 //twilio
 var accountSid = 'AC2b10c047fd90d4d0c6455d223f33f8d5';
 // hash this or store this somewhere
-//var authToken = '{{ auth_token }}';
 var authToken = '5ce83d92939d9515db965143bc113b78';
 var LookupsClient = require('twilio').LookupsClient;
 var twilioLookupClient = new LookupsClient(accountSid, authToken);
@@ -60,22 +60,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * get /api/phonenumbers/validate
- * assigns random search tag to email caches result
- */
+ **/
 
 app.get("/api/phonenumbers/validate/", function(req, res, next) {
   var phoneNumber = "+1" + req.query.phonenumber;
   twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
-    if (err.status === 404){
+    if (err && err.status === 404){
       console.log("failed");
-      return res.status(404).send("Phone number is not valid");
-    } else if (!err && number.carrier && number.country_code === "US"){
+      return res.status(404).send("please choose a valid number");
+    }
+    if (!err && number){
       console.log("succeeded");
       return res.status(200).send();
     } else {
       console.log("api failed");
-      return res.status(404).send({message: "API call invalid"});
+      return res.status(404).send("please choose a valid number");
     }
+    return res.status(404).send("unknown error");
   })
 });
 
@@ -86,12 +87,7 @@ app.get("/api/phonenumbers/validate/", function(req, res, next) {
  */
 
 app.post("/api/phonenumbers/", function(req, res, next) {
-  console.log("here");
-  var phoneNumber = "+1" + req.body.phonenumber;
-  twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
-    console.log("success");
-    console.log(number);
-  })
+  
 });
 
 app.use(function(req, res) {

@@ -14,16 +14,6 @@ class TxtwarForm extends React.Component  {
 
   componentDidMount() {
     TxtwarFormStore.listen(this._onChange);
-
-    $(document).ajaxStart(() => {
-      TxtwarFormStore.updateAjaxAnimation('fadeIn');
-    });
-
-    $(document).ajaxComplete(() => {
-      setTimeout(() => {
-        TxtwarFormStore.updateAjaxAnimation('fadeOut');
-      }, 2000);
-    });
   }
 
   componentWillUnmount() {
@@ -37,7 +27,9 @@ class TxtwarForm extends React.Component  {
   _handleSubmit(event) {
     event.preventDefault();
     if (this.state.searchQuery.length === 10){
-      console.log('jdfkjfdkl');
+      TxtwarFormActions.validatePhoneNumber({
+        phonenumber: this.state.searchQuery
+      });
       TxtwarFormActions.addPhoneNumber({
         phonenumber: this.state.searchQuery
       });
@@ -62,11 +54,7 @@ class TxtwarForm extends React.Component  {
     } else if (numStr.length > 3 && numStr.length < 7){
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3);
     } else {
-      if (numStr.length === 10){
-        TxtwarFormActions.validatePhoneNumber({
-          phonenumber: this.state.searchQuery
-        });
-      }
+
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3,6) + "-" + numStr.slice(6);
     }
   }

@@ -5,6 +5,7 @@ class TxtwarFormStore {
   constructor() {
     this.bindActions(TxtwarFormActions);
     this.searchQuery = '';
+    this.validated = false;
   }
 
   onUpdateAjaxAnimation(className) {
@@ -20,11 +21,13 @@ class TxtwarFormStore {
       this.searchQuery = searchQuery;
     }
   }
-  onValidateTwilioNumber(){
 
+  onValidatePhoneNumberSuccess(){
+    this.validated = true;
   }
 
-  onValidateTwilioNumberFail(){
+  onValidatePhoneNumberFail(){
+    this.validated = false;
     toastr.error("Please enter a valid phone number");
   }
 

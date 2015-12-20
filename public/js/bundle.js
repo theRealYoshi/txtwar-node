@@ -98,7 +98,7 @@ var TxtwarFormActions = (function () {
   function TxtwarFormActions() {
     _classCallCheck(this, TxtwarFormActions);
 
-    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validateTwilioNumberFail');
+    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validatePhoneNumberSuccess', 'validatePhoneNumberFail');
   }
 
   _createClass(TxtwarFormActions, [{
@@ -118,15 +118,18 @@ var TxtwarFormActions = (function () {
   }, {
     key: 'validatePhoneNumber',
     value: function validatePhoneNumber(payload) {
+      var _this = this;
+
       $.ajax({
         type: 'GET',
         url: '/api/phonenumbers/validate/',
         data: { phonenumber: payload.phonenumber }
-      }).done(function (data) {
+      }).done(function () {
         //set state to true
         console.log("api call success");
-      }).fail(function (data) {
-        console.log(data);
+        _this.actions.validatePhoneNumberSuccess();
+      }).fail(function () {
+        _this.actions.validatePhoneNumberFail();
       });
     }
   }]);
@@ -590,16 +593,6 @@ var TxtwarForm = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _TxtwarFormStore2.default.listen(this._onChange);
-
-      $(document).ajaxStart(function () {
-        _TxtwarFormStore2.default.updateAjaxAnimation('fadeIn');
-      });
-
-      $(document).ajaxComplete(function () {
-        setTimeout(function () {
-          _TxtwarFormStore2.default.updateAjaxAnimation('fadeOut');
-        }, 2000);
-      });
     }
   }, {
     key: 'componentWillUnmount',
@@ -616,7 +609,9 @@ var TxtwarForm = (function (_React$Component) {
     value: function _handleSubmit(event) {
       event.preventDefault();
       if (this.state.searchQuery.length === 10) {
-        console.log('jdfkjfdkl');
+        _TxtwarFormActions2.default.validatePhoneNumber({
+          phonenumber: this.state.searchQuery
+        });
         _TxtwarFormActions2.default.addPhoneNumber({
           phonenumber: this.state.searchQuery
         });
@@ -642,11 +637,7 @@ var TxtwarForm = (function (_React$Component) {
       } else if (numStr.length > 3 && numStr.length < 7) {
         return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3);
       } else {
-        if (numStr.length === 10) {
-          _TxtwarFormActions2.default.validatePhoneNumber({
-            phonenumber: this.state.searchQuery
-          });
-        }
+
         return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3, 6) + "-" + numStr.slice(6);
       }
     }
@@ -902,6 +893,7 @@ var TxtwarFormStore = (function () {
 
     this.bindActions(_TxtwarFormActions2.default);
     this.searchQuery = '';
+    this.validated = false;
   }
 
   _createClass(TxtwarFormStore, [{
@@ -921,11 +913,14 @@ var TxtwarFormStore = (function () {
       }
     }
   }, {
-    key: 'onValidateTwilioNumber',
-    value: function onValidateTwilioNumber() {}
+    key: 'onValidatePhoneNumberSuccess',
+    value: function onValidatePhoneNumberSuccess() {
+      this.validated = true;
+    }
   }, {
-    key: 'onValidateTwilioNumberFail',
-    value: function onValidateTwilioNumberFail() {
+    key: 'onValidatePhoneNumberFail',
+    value: function onValidatePhoneNumberFail() {
+      this.validated = false;
       toastr.error("Please enter a valid phone number");
     }
   }]);

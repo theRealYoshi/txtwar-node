@@ -8,7 +8,8 @@ class TxtwarFormActions {
       'updateAjaxAnimation',
       'addPhoneNumberSuccess',
       'addPhoneNumberFail',
-      'validateTwilioNumberFail'
+      'validatePhoneNumberSuccess',
+      'validatePhoneNumberFail'
     );
   }
 
@@ -33,12 +34,13 @@ class TxtwarFormActions {
       url: '/api/phonenumbers/validate/',
       data: { phonenumber: payload.phonenumber }
     })
-    .done((data) => {
+    .done(() => {
       //set state to true
       console.log("api call success");
+      this.actions.validatePhoneNumberSuccess();
     })
-    .fail((data) => {
-      console.log(data);
+    .fail(() => {
+      this.actions.validatePhoneNumberFail();
     });
   }
 }
