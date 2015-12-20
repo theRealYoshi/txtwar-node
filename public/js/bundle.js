@@ -98,14 +98,15 @@ var TxtwarFormActions = (function () {
   function TxtwarFormActions() {
     _classCallCheck(this, TxtwarFormActions);
 
-    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'validateTwilioNumber', 'validateTwilioNumberFail');
+    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validateTwilioNumberFail');
   }
 
   _createClass(TxtwarFormActions, [{
-    key: 'validateTwilioNumber',
-    value: function validateTwilioNumber(payload) {
+    key: 'addPhoneNumber',
+    value: function addPhoneNumber(payload) {
       $.ajax({
-        url: '/api/twiliovalidation',
+        type: 'POST',
+        url: '/api/phonenumbers/',
         data: { phonenumber: payload.phonenumber }
       }).done(function (data) {
         //set state to true
@@ -448,16 +449,6 @@ var Navbar = (function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _NavbarStore2.default.listen(this.onChange);
-
-      $(document).ajaxStart(function () {
-        _NavbarActions2.default.updateAjaxAnimation('fadeIn');
-      });
-
-      $(document).ajaxComplete(function () {
-        setTimeout(function () {
-          _NavbarActions2.default.updateAjaxAnimation('fadeOut');
-        }, 2000);
-      });
     }
   }, {
     key: 'componentWillUnmount',
@@ -597,6 +588,11 @@ var TxtwarForm = (function (_React$Component) {
       });
     }
   }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      _TxtwarFormStore2.default.unlisten(this.onChange);
+    }
+  }, {
     key: '_onChange',
     value: function _onChange(state) {
       this.setState(state);
@@ -606,14 +602,13 @@ var TxtwarForm = (function (_React$Component) {
     value: function _handleSubmit(event) {
       event.preventDefault();
       if (this.state.searchQuery.length === 10) {
-        _TxtwarFormActions2.default.validateTwilioNumber({
+        console.log('jdfkjfdkl');
+        _TxtwarFormActions2.default.addPhoneNumber({
           phonenumber: this.state.searchQuery
         });
       } else {
         _TxtwarFormActions2.default.validateTwilioNumberFail();
       }
-      // if validated
-      // save to database
     }
   }, {
     key: '_checkValidation',
@@ -633,6 +628,11 @@ var TxtwarForm = (function (_React$Component) {
       } else if (numStr.length > 3 && numStr.length < 7) {
         return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3);
       } else {
+        if (numStr.length === 10) {
+          _TxtwarFormActions2.default.addPhoneNumber({
+            phonenumber: this.state.searchQuery
+          });
+        }
         return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3, 6) + "-" + numStr.slice(6);
       }
     }

@@ -6,14 +6,16 @@ class TxtwarFormActions {
     this.generateActions(
       'updateSearchQuery',
       'updateAjaxAnimation',
-      'validateTwilioNumber',
+      'addPhoneNumberSuccess',
+      'addPhoneNumberFail',
       'validateTwilioNumberFail'
     );
   }
 
-  validateTwilioNumber(payload){
+  addPhoneNumber(payload){
     $.ajax({
-      url: '/api/twiliovalidation',
+      type: 'POST',
+      url: '/api/phonenumbers/',
       data: { phonenumber: payload.phonenumber }
     })
     .done((data) => {

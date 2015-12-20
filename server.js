@@ -59,13 +59,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * GET /api/phonenumbers/twiliovalidation
+ * POST /api/phonenumbers/
  * assigns random search tag to email caches result
  */
 
-app.get("/api/phonenumbers/", function(req, res, next) {
+app.post("/api/phonenumbers/", function(req, res, next) {
   console.log("here");
-  var phoneNumber = req.body.phonenumber;
+  var phoneNumber = "+1" + req.body.phonenumber;
   twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
     console.log("success");
     console.log(number);

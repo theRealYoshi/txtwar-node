@@ -26,6 +26,10 @@ class TxtwarForm extends React.Component  {
     });
   }
 
+  componentWillUnmount() {
+    TxtwarFormStore.unlisten(this.onChange);
+  }
+
   _onChange(state){
     this.setState(state);
   }
@@ -33,14 +37,13 @@ class TxtwarForm extends React.Component  {
   _handleSubmit(event) {
     event.preventDefault();
     if (this.state.searchQuery.length === 10){
-      TxtwarFormActions.validateTwilioNumber({
+      console.log('jdfkjfdkl');
+      TxtwarFormActions.addPhoneNumber({
         phonenumber: this.state.searchQuery
       });
     } else {
       TxtwarFormActions.validateTwilioNumberFail();
     }
-    // if validated
-    // save to database
   }
 
   _checkValidation(){
@@ -59,6 +62,11 @@ class TxtwarForm extends React.Component  {
     } else if (numStr.length > 3 && numStr.length < 7){
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3);
     } else {
+      if (numStr.length === 10){
+        TxtwarFormActions.addPhoneNumber({
+          phonenumber: this.state.searchQuery
+        });
+      }
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3,6) + "-" + numStr.slice(6);
     }
   }
