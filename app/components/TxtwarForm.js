@@ -63,7 +63,7 @@ class TxtwarForm extends React.Component  {
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3);
     } else {
       if (numStr.length === 10){
-        TxtwarFormActions.addPhoneNumber({
+        TxtwarFormActions.validatePhoneNumber({
           phonenumber: this.state.searchQuery
         });
       }

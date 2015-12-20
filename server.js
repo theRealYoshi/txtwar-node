@@ -59,6 +59,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
+ * get /api/phonenumbers/validate
+ * assigns random search tag to email caches result
+ */
+
+app.get("/api/phonenumbers/validate/", function(req, res, next) {
+  var phoneNumber = "+1" + req.query.phonenumber;
+  twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
+    if (err.status === 404){
+      console.log("failed");
+      return res.status(404).send("Phone number is not valid");
+    } else if (!err && number.carrier && number.country_code === "US"){
+      console.log("succeeded");
+      return res.status(200).send();
+    } else {
+      console.log("api failed");
+      return res.status(404).send({message: "API call invalid"});
+    }
+  })
+});
+
+
+/**
  * POST /api/phonenumbers/
  * assigns random search tag to email caches result
  */

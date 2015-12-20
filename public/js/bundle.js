@@ -115,6 +115,20 @@ var TxtwarFormActions = (function () {
         console.log("api call fail");
       });
     }
+  }, {
+    key: 'validatePhoneNumber',
+    value: function validatePhoneNumber(payload) {
+      $.ajax({
+        type: 'GET',
+        url: '/api/phonenumbers/validate/',
+        data: { phonenumber: payload.phonenumber }
+      }).done(function (data) {
+        //set state to true
+        console.log("api call success");
+      }).fail(function (data) {
+        console.log(data);
+      });
+    }
   }]);
 
   return TxtwarFormActions;
@@ -629,7 +643,7 @@ var TxtwarForm = (function (_React$Component) {
         return "(" + numStr.slice(0, 3) + ")-" + numStr.slice(3);
       } else {
         if (numStr.length === 10) {
-          _TxtwarFormActions2.default.addPhoneNumber({
+          _TxtwarFormActions2.default.validatePhoneNumber({
             phonenumber: this.state.searchQuery
           });
         }
