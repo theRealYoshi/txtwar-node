@@ -46,11 +46,17 @@ class TxtwarForm extends React.Component  {
   }
 
   _formattedNumber() {
-    var numStr = this.state.searchQuery.toString().split("");
-    for (var i = 0; i < numStr.length;i++){
-
+    var numStr = this.state.searchQuery;
+    //regex for different formats and then add 000's until end
+    if (numStr.length <= 3){
+      return "(" + numStr;
+    } else if (numStr.length > 3 && numStr.length < 7){
+      console.log(numStr);
+      return "(" + numStr.toString().slice(0,3) + ")-" + numStr.toString().slice(3);
+    } else {
+      console.log(numStr);
+      return "(" + numStr.toString().slice(0,3) + ")-" + numStr.toString().slice(3,6) + "-" + numStr.toString().slice(6);
     }
-    return this.state.searchQuery;
   }
 
   //add debounce

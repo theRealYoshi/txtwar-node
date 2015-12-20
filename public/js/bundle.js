@@ -599,9 +599,17 @@ var TxtwarForm = (function (_React$Component) {
   }, {
     key: '_formattedNumber',
     value: function _formattedNumber() {
-      var numStr = this.state.searchQuery.toString().split("");
-      for (var i = 0; i < numStr.length; i++) {}
-      return this.state.searchQuery;
+      var numStr = this.state.searchQuery;
+      //regex for different formats and then add 000's until end
+      if (numStr.length <= 3) {
+        return "(" + numStr;
+      } else if (numStr.length > 3 && numStr.length < 7) {
+        console.log(numStr);
+        return "(" + numStr.toString().slice(0, 3) + ")-" + numStr.toString().slice(3);
+      } else {
+        console.log(numStr);
+        return "(" + numStr.toString().slice(0, 3) + ")-" + numStr.toString().slice(3, 6) + "-" + numStr.toString().slice(6);
+      }
     }
 
     //add debounce
@@ -866,12 +874,13 @@ var TxtwarFormStore = (function () {
   }, {
     key: 'onUpdateSearchQuery',
     value: function onUpdateSearchQuery(event) {
-      if (isNaN(event.target.value)) {
+      var searchQuery = event.target.value.replace(/[^\d]/g, "");
+      console.log(searchQuery);
+      if (isNaN(searchQuery)) {
         toastr.error("please enter numbers only");
       } else {
-        this.searchQuery = event.target.value;
+        this.searchQuery = searchQuery;
       }
-      console.log(this.searchQuery);
     }
   }]);
 

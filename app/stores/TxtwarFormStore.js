@@ -12,12 +12,13 @@ class TxtwarFormStore {
   }
 
   onUpdateSearchQuery(event) {
-    if(isNaN(event.target.value)){
+    var searchQuery = event.target.value.replace(/[^\d]/g,"");
+    console.log(searchQuery);
+    if(isNaN(searchQuery)){
       toastr.error("please enter numbers only");
     } else {
-      this.searchQuery = event.target.value;
+      this.searchQuery = searchQuery;
     }
-    console.log(this.searchQuery);
   }
 
 }
