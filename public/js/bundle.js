@@ -104,6 +104,8 @@ var TxtwarFormActions = (function () {
   _createClass(TxtwarFormActions, [{
     key: 'addPhoneNumber',
     value: function addPhoneNumber(payload) {
+      var _this = this;
+
       $.ajax({
         type: 'POST',
         url: '/api/phonenumbers/',
@@ -111,14 +113,16 @@ var TxtwarFormActions = (function () {
       }).done(function (data) {
         //set state to true
         console.log("api call success");
+        _this.actions.addPhoneNumberSuccess();
       }).fail(function (data) {
-        console.log("api call fail");
+        console.log("api call failure");
+        _this.actions.addPhoneNumberFail();
       });
     }
   }, {
     key: 'validatePhoneNumber',
     value: function validatePhoneNumber(payload) {
-      var _this = this;
+      var _this2 = this;
 
       $.ajax({
         type: 'GET',
@@ -127,9 +131,9 @@ var TxtwarFormActions = (function () {
       }).done(function () {
         //set state to true
         console.log("api call success");
-        _this.actions.validatePhoneNumberSuccess();
+        _this2.actions.validatePhoneNumberSuccess();
       }).fail(function () {
-        _this.actions.validatePhoneNumberFail();
+        _this2.actions.validatePhoneNumberFail();
       });
     }
   }]);
@@ -609,9 +613,6 @@ var TxtwarForm = (function (_React$Component) {
     value: function _handleSubmit(event) {
       event.preventDefault();
       if (this.state.searchQuery.length === 10) {
-        _TxtwarFormActions2.default.validatePhoneNumber({
-          phonenumber: this.state.searchQuery
-        });
         _TxtwarFormActions2.default.addPhoneNumber({
           phonenumber: this.state.searchQuery
         });
@@ -913,14 +914,14 @@ var TxtwarFormStore = (function () {
       }
     }
   }, {
-    key: 'onValidatePhoneNumberSuccess',
-    value: function onValidatePhoneNumberSuccess() {
-      this.validated = true;
+    key: 'onAddPhoneNumberSuccess',
+    value: function onAddPhoneNumberSuccess() {
+      // change this to a success notification
+      toastr.error("Successfully Added");
     }
   }, {
-    key: 'onValidatePhoneNumberFail',
-    value: function onValidatePhoneNumberFail() {
-      this.validated = false;
+    key: 'onAddPhoneNumberFail',
+    value: function onAddPhoneNumberFail() {
       toastr.error("Please enter a valid phone number");
     }
   }]);

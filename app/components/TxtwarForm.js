@@ -27,9 +27,6 @@ class TxtwarForm extends React.Component  {
   _handleSubmit(event) {
     event.preventDefault();
     if (this.state.searchQuery.length === 10){
-      TxtwarFormActions.validatePhoneNumber({
-        phonenumber: this.state.searchQuery
-      });
       TxtwarFormActions.addPhoneNumber({
         phonenumber: this.state.searchQuery
       });

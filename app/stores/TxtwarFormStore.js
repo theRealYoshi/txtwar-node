@@ -22,12 +22,13 @@ class TxtwarFormStore {
     }
   }
 
-  onValidatePhoneNumberSuccess(){
-    this.validated = true;
+  onAddPhoneNumberSuccess(){
+    // change this to a success notification
+    toastr.error("Successfully Added");
+    
   }
 
-  onValidatePhoneNumberFail(){
-    this.validated = false;
+  onAddPhoneNumberFail(){
     toastr.error("Please enter a valid phone number");
   }
 

@@ -22,9 +22,12 @@ class TxtwarFormActions {
     .done((data) => {
       //set state to true
       console.log("api call success");
+      this.actions.addPhoneNumberSuccess();
+
     })
     .fail((data) => {
-      console.log("api call fail");
+      console.log("api call failure");
+      this.actions.addPhoneNumberFail();
     });
   }
 
