@@ -35,6 +35,11 @@ class TxtwarForm extends React.Component  {
     }
   }
 
+  _handleClick(event) {
+    event.preventDefault();
+    TxtwarFormActions.updateSearchQueryClick(event.target.value);
+  }
+
   _checkValidation(){
     // route to twilio api once all numbers are fulfilled
   }
@@ -58,12 +63,14 @@ class TxtwarForm extends React.Component  {
   //add debounce
 
   render() {
+    var keypad = [1,2,3,4,5,6,7,8,9,null,0,"<<"];
     var phoneNumber;
     if (this.state.searchQuery){
       phoneNumber = this._formattedNumber();
     } else {
       phoneNumber = "";
     }
+
     return (
       <div>
         <form ref='searchForm' className="navbar-form navbar-left animated" onSubmit={this._handleSubmit.bind(this)}>
@@ -76,7 +83,13 @@ class TxtwarForm extends React.Component  {
             </span>
           </div>
         </form>
-          //keypad here
+        <div className="keypad-container">
+          {
+            keypad.map(function(key){
+              return <button className="key" onClick={this._handleClick.bind(this)} value={key}>{key}</button>
+            }.bind(this))
+          }
+        </div>
       </div>
     );
   }

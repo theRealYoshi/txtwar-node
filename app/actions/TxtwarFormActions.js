@@ -5,6 +5,7 @@ class TxtwarFormActions {
   constructor() {
     this.generateActions(
       'updateSearchQuery',
+      'updateSearchQueryClick',
       'updateAjaxAnimation',
       'addPhoneNumberSuccess',
       'addPhoneNumberFail',

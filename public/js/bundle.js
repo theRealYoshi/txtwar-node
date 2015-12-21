@@ -98,7 +98,7 @@ var TxtwarFormActions = (function () {
   function TxtwarFormActions() {
     _classCallCheck(this, TxtwarFormActions);
 
-    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validatePhoneNumberSuccess', 'validatePhoneNumberFail');
+    this.generateActions('updateSearchQuery', 'updateSearchQueryClick', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validatePhoneNumberSuccess', 'validatePhoneNumberFail');
   }
 
   _createClass(TxtwarFormActions, [{
@@ -399,15 +399,15 @@ var Home = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var header = _react2.default.createElement(
+        'h1',
+        { className: 'text-center' },
+        'Enter your phone number'
+      );
 
       return _react2.default.createElement(
         'div',
         { className: 'container' },
-        _react2.default.createElement(
-          'h1',
-          { className: 'text-center' },
-          'Enter your phone number'
-        ),
         _react2.default.createElement(
           'div',
           { className: 'row' },
@@ -621,6 +621,12 @@ var TxtwarForm = (function (_React$Component) {
       }
     }
   }, {
+    key: '_handleClick',
+    value: function _handleClick(event) {
+      event.preventDefault();
+      _TxtwarFormActions2.default.updateSearchQueryClick(event.target.value);
+    }
+  }, {
     key: '_checkValidation',
     value: function _checkValidation() {
       // route to twilio api once all numbers are fulfilled
@@ -647,12 +653,14 @@ var TxtwarForm = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var keypad = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "<<"];
       var phoneNumber;
       if (this.state.searchQuery) {
         phoneNumber = this._formattedNumber();
       } else {
         phoneNumber = "";
       }
+
       return _react2.default.createElement(
         'div',
         null,
@@ -676,7 +684,17 @@ var TxtwarForm = (function (_React$Component) {
             )
           )
         ),
-        '//keypad here'
+        _react2.default.createElement(
+          'div',
+          { className: 'keypad-container' },
+          keypad.map((function (key) {
+            return _react2.default.createElement(
+              'button',
+              { className: 'key', onClick: this._handleClick.bind(this), value: key },
+              key
+            );
+          }).bind(this))
+        )
       );
     }
   }]);
@@ -911,6 +929,15 @@ var TxtwarFormStore = (function () {
         toastr.error("Please enter numbers only");
       } else {
         this.searchQuery = searchQuery;
+      }
+    }
+  }, {
+    key: 'onUpdateSearchQueryClick',
+    value: function onUpdateSearchQueryClick(value) {
+      if (value === "<<") {
+        this.searchQuery = this.searchQuery.slice(0, this.searchQuery.length - 1);
+      } else {
+        this.searchQuery = this.searchQuery + value;
       }
     }
   }, {

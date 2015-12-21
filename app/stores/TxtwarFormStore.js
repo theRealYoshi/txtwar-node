@@ -22,10 +22,18 @@ class TxtwarFormStore {
     }
   }
 
+  onUpdateSearchQueryClick(value) {
+    if(value === "<<"){
+      this.searchQuery = this.searchQuery.slice(0, this.searchQuery.length - 1);
+    } else {
+      this.searchQuery = this.searchQuery + value;
+    }
+  }
+
   onAddPhoneNumberSuccess(){
     // change this to a success notification
     toastr.error("Successfully Added");
-    
+
   }
 
   onAddPhoneNumberFail(){

@@ -59,10 +59,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * get /api/phonenumbers/validate
- **/
-
-/**
  * POST /api/phonenumbers/
  * assigns random search tag to email caches result
  */
@@ -77,7 +73,7 @@ app.post("/api/phonenumbers/", function(req, res, next) {
       // check database first and then add to database
       console.log("succeeded");
       return res.status(200).send();
-      
+
     } else {
       console.log("api failed");
       return res.status(404).send("please choose a valid number");

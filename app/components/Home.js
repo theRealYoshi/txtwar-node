@@ -32,10 +32,10 @@ class Home extends React.Component {
   }
 
   render() {
+    var header = <h1 className='text-center'>Enter your phone number</h1>;
 
     return (
       <div className='container'>
-        <h1 className='text-center'>Enter your phone number</h1>
         <div className='row'>
           <TxtwarForm />
         </div>
