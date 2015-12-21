@@ -934,6 +934,9 @@ var TxtwarFormStore = (function () {
   }, {
     key: 'onUpdateSearchQueryClick',
     value: function onUpdateSearchQueryClick(value) {
+      if (this.searchQuery.length === 10 && value !== "<<") {
+        return null;
+      }
       if (value === "<<") {
         this.searchQuery = this.searchQuery.slice(0, this.searchQuery.length - 1);
       } else {
