@@ -21,11 +21,12 @@ var config = require('./config');
 var secrets = require('./secrets')
 
 //twilio
-var accountSid = secrets.twilio.sid;
-// hash this or store this somewhere
-var authToken = secrets.twilio.token;
-var LookupsClient = require('twilio').LookupsClient;
-var twilioLookupClient = new LookupsClient(accountSid, authToken);
+var twilioAccountSid = secrets.twilio.sid;
+var twilioAuthToken = secrets.twilio.token;
+var twilio = require('twilio');
+var LookupsClient = twilio.LookupsClient;
+var twilioLookupClient = new LookupsClient(twilioAccountSid, twilioAuthToken);
+var twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
 // Redis
 if (process.env.REDISTOGO_URL) {
@@ -79,10 +80,6 @@ app.post("/api/phonenumbers/", function(req, res, next) {
       });
     },
     function(phoneNumber, callback) {
-       // check database first and then add to database
-       // after successful add
-       // implement twilio callback to text user
-
        try {
          PhoneNumber.find({}, function(err, numbers){
            numbers.forEach(function(number){
@@ -100,20 +97,39 @@ app.post("/api/phonenumbers/", function(req, res, next) {
          return res.status(400).send('XML Parse Error');
        }
      },
-     function(phoneNumber) {
+     function(phoneNumber, callback) {
+       // do something with Twilio on success of send say that code has been sent
+       //create hashed code here;
        try {
-         console.log("trying");
          var phoneNumber = new PhoneNumber({
            phoneNumber: phoneNumber,
            phoneNumberStripped: phoneNumber.slice(2)
          });
 
+         var codeHash = "238947895741";
          phoneNumber.save(function(err) {
            if (err) return next(err);
-           res.status(200).send(phoneNumber.phoneNumber + ' has been added successfully!');
+           callback(err, phoneNumber, codeHash);
          });
        } catch (e) {
          console.log("errrrrrrr");
+         res.status(404).send(phoneNumber + ' could not be saved.');
+       }
+     },
+     function(phoneNumber, codeHash){
+       var options = {
+         to: phoneNumber,
+         from: secrets.twilio.number,
+         body: "Please reply back with this code: " + codeHash
+       }
+       try {
+         twilioClient.sendMessage(options, function(err, response){
+           if (err) return next(err);
+           console.log(response);
+           res.status(200).send("verification code has been sent to " + phoneNumber.phoneNumber);
+         })
+       } catch (e) {
+         console.log("message did not send");
          res.status(404).send(phoneNumber + ' could not be saved.');
        }
      }
