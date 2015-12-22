@@ -14,7 +14,6 @@ class TxtwarFormStore {
 
   onUpdateSearchQuery(event) {
     var searchQuery = event.target.value.replace(/[^\d]/g,"");
-    console.log(searchQuery);
     if(isNaN(searchQuery)){
       toastr.error("Please enter numbers only");
     } else {
