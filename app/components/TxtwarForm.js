@@ -40,14 +40,6 @@ class TxtwarForm extends React.Component  {
     TxtwarFormActions.updateSearchQueryClick(event.target.value);
   }
 
-  _checkValidation(){
-    // route to twilio api once all numbers are fulfilled
-  }
-
-  _onKeypressEvent(){
-
-  }
-
   _formattedNumber() {
     var numStr = this.state.searchQuery.toString();
     //regex for different formats and then add 000's until end

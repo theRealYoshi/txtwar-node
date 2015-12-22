@@ -98,7 +98,7 @@ var TxtwarFormActions = (function () {
   function TxtwarFormActions() {
     _classCallCheck(this, TxtwarFormActions);
 
-    this.generateActions('updateSearchQuery', 'updateSearchQueryClick', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail', 'validatePhoneNumberSuccess', 'validatePhoneNumberFail');
+    this.generateActions('updateSearchQuery', 'updateSearchQueryClick', 'updateAjaxAnimation', 'addPhoneNumberSuccess', 'addPhoneNumberFail');
   }
 
   _createClass(TxtwarFormActions, [{
@@ -111,29 +111,9 @@ var TxtwarFormActions = (function () {
         url: '/api/phonenumbers/',
         data: { phonenumber: payload.phonenumber }
       }).done(function (data) {
-        //set state to true
-        console.log("api call success");
-        _this.actions.addPhoneNumberSuccess();
+        _this.actions.addPhoneNumberSuccess(data);
       }).fail(function (data) {
-        console.log("api call failure");
-        _this.actions.addPhoneNumberFail();
-      });
-    }
-  }, {
-    key: 'validatePhoneNumber',
-    value: function validatePhoneNumber(payload) {
-      var _this2 = this;
-
-      $.ajax({
-        type: 'GET',
-        url: '/api/phonenumbers/validate/',
-        data: { phonenumber: payload.phonenumber }
-      }).done(function () {
-        //set state to true
-        console.log("api call success");
-        _this2.actions.validatePhoneNumberSuccess();
-      }).fail(function () {
-        _this2.actions.validatePhoneNumberFail();
+        _this.actions.addPhoneNumberFail(data);
       });
     }
   }]);
@@ -627,14 +607,6 @@ var TxtwarForm = (function (_React$Component) {
       _TxtwarFormActions2.default.updateSearchQueryClick(event.target.value);
     }
   }, {
-    key: '_checkValidation',
-    value: function _checkValidation() {
-      // route to twilio api once all numbers are fulfilled
-    }
-  }, {
-    key: '_onKeypressEvent',
-    value: function _onKeypressEvent() {}
-  }, {
     key: '_formattedNumber',
     value: function _formattedNumber() {
       var numStr = this.state.searchQuery.toString();
@@ -944,14 +916,13 @@ var TxtwarFormStore = (function () {
     }
   }, {
     key: 'onAddPhoneNumberSuccess',
-    value: function onAddPhoneNumberSuccess() {
-      // change this to a success notification
-      toastr.error("Successfully Added");
+    value: function onAddPhoneNumberSuccess(data) {
+      toastr.error(data);
     }
   }, {
     key: 'onAddPhoneNumberFail',
-    value: function onAddPhoneNumberFail() {
-      toastr.error("Please enter a valid phone number");
+    value: function onAddPhoneNumberFail(data) {
+      toastr.error(data.responseText);
     }
   }]);
 

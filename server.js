@@ -12,7 +12,6 @@ var xml2js = require('xml2js');
 var mongoose = require('mongoose');
 var PhoneNumber = require('./models/phonenumbers.js');
 
-
 var swig  = require('swig');
 var React = require('react');
 var ReactDOM = require('react-dom/server');
@@ -22,9 +21,9 @@ var config = require('./config');
 var secrets = require('./secrets')
 
 //twilio
-var accountSid = secrets.twilio.sid || 'AC2b10c047fd90d4d0c6455d223f33f8d5';
+var accountSid = secrets.twilio.sid;
 // hash this or store this somewhere
-var authToken = secrets.twilio.token || '5ce83d92939d9515db965143bc113b78';
+var authToken = secrets.twilio.token;
 var LookupsClient = require('twilio').LookupsClient;
 var twilioLookupClient = new LookupsClient(accountSid, authToken);
 
@@ -83,19 +82,22 @@ app.post("/api/phonenumbers/", function(req, res, next) {
        // check database first and then add to database
        // after successful add
        // implement twilio callback to text user
-       try {
-         PhoneNumber.findOne({ phoneNumber: phoneNumber }, function(err, phoneNumber) {
-           if (err) return next(err);
 
-           if (phoneNumber) {
-             console.log("found");
-             return res.status(409).send({ message: phoneNumber + ' is already in the database.' });
+       try {
+         PhoneNumber.find({}, function(err, numbers){
+           numbers.forEach(function(number){
+             console.log(number);
+           })
+         });
+         PhoneNumber.findOne({ phoneNumber: phoneNumber }, function(err, number) {
+           if (err) return next(err);
+           if (number) {
+             return res.status(409).send(phoneNumber + ' has already been saved.');
            }
-           console.log(err);
            callback(err, phoneNumber);
          });
        } catch (e) {
-         return res.status(400).send({ message: 'XML Parse Error' });
+         return res.status(400).send('XML Parse Error');
        }
      },
      function(phoneNumber) {
@@ -108,11 +110,11 @@ app.post("/api/phonenumbers/", function(req, res, next) {
 
          phoneNumber.save(function(err) {
            if (err) return next(err);
-           console.log("saved!");
-           res.send({ message: phoneNumber + ' has been added successfully!' });
+           res.status(200).send(phoneNumber.phoneNumber + ' has been added successfully!');
          });
        } catch (e) {
-         res.status(404).send({ message: phoneNumber + ' could not be saved.' });
+         console.log("errrrrrrr");
+         res.status(404).send(phoneNumber + ' could not be saved.');
        }
      }
    ]);
@@ -133,7 +135,6 @@ app.use(function(req, res) {
    }
  });
 });
-
 
 /**
  * Server

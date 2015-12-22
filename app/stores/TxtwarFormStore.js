@@ -32,14 +32,12 @@ class TxtwarFormStore {
     }
   }
 
-  onAddPhoneNumberSuccess(){
-    // change this to a success notification
-    toastr.error("Successfully Added");
-
+  onAddPhoneNumberSuccess(data){
+    toastr.error(data);
   }
 
-  onAddPhoneNumberFail(){
-    toastr.error("Please enter a valid phone number");
+  onAddPhoneNumberFail(data){
+    toastr.error(data.responseText);
   }
 
 }

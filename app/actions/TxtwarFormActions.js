@@ -8,9 +8,7 @@ class TxtwarFormActions {
       'updateSearchQueryClick',
       'updateAjaxAnimation',
       'addPhoneNumberSuccess',
-      'addPhoneNumberFail',
-      'validatePhoneNumberSuccess',
-      'validatePhoneNumberFail'
+      'addPhoneNumberFail'
     );
   }
 
@@ -21,32 +19,14 @@ class TxtwarFormActions {
       data: { phonenumber: payload.phonenumber }
     })
     .done((data) => {
-      //set state to true
-      console.log("api call success");
-      this.actions.addPhoneNumberSuccess();
+      this.actions.addPhoneNumberSuccess(data);
 
     })
     .fail((data) => {
-      console.log("api call failure");
-      this.actions.addPhoneNumberFail();
+      this.actions.addPhoneNumberFail(data);
     });
   }
 
-  validatePhoneNumber(payload){
-    $.ajax({
-      type: 'GET',
-      url: '/api/phonenumbers/validate/',
-      data: { phonenumber: payload.phonenumber }
-    })
-    .done(() => {
-      //set state to true
-      console.log("api call success");
-      this.actions.validatePhoneNumberSuccess();
-    })
-    .fail(() => {
-      this.actions.validatePhoneNumberFail();
-    });
-  }
 }
 
 export default alt.createActions(TxtwarFormActions);
