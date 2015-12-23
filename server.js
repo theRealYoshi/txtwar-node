@@ -93,6 +93,7 @@ app.post("/api/phonenumbers/", function(req, res, next) {
            if (number) {
              return res.status(409).send(phoneNumber + ' has already been saved.');
            }
+           // else if number && !verified then resend new code to update database
            callback(err, phoneNumber);
          });
        } catch (e) {
