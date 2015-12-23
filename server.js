@@ -61,6 +61,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Configure application routes for message reply back
+require('./controllers/router')(app);
+
 /**
  * POST /api/phonenumbers/
  * assigns random search tag to email caches result
@@ -99,9 +102,6 @@ app.post("/api/phonenumbers/", function(req, res, next) {
              var resalt = bcrypt.genSaltSync(10);
              var resendHashed = bcrypt.hashSync(resend, resalt);
 
-             // update database and resend code
-             console.log(resendHashed)
-             console.log(number.phoneCodeHash);
              var options = {
                to: number.phoneNumber,
                from: secrets.twilio.number,
@@ -179,9 +179,8 @@ function generateRandomSixDigitCode(){
 }
 
 function setRedis(phoneNumber){
-  console.log("setting in redis");
   redis.set(phoneNumber, true);
-  redis.expire(phoneNumber, 30);
+  redis.expire(phoneNumber, 300);
 }
 
 app.use(function(req, res) {
