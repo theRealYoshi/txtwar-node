@@ -70,30 +70,55 @@ app.post("/api/phonenumbers/", function(req, res, next) {
   var phoneNumber = "+1" + req.body.phonenumber;
   async.waterfall([
     function(callback){
-      twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
-        if (err) return next(err);
-        try {
-          if (number){
-            callback(err, phoneNumber);
+      try {
+        redis.exists(phoneNumber, function(err, reply){
+          if (reply === 1){
+            res.status(409).send(phoneNumber + ' has already been saved.');
+          } else {
+            console.log('looking up for verification in twilio');
+            twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
+              if (err) return next(err);
+                if (number){
+                  callback(err, phoneNumber);
+                }
+            });
           }
-        } catch (e) {
-          res.status(404).send("please choose a valid number");
-        }
-      });
+        })
+      } catch (e) {
+        res.status(404).send("please choose a valid number");
+      }
     },
     function(phoneNumber, callback) {
        try {
-         PhoneNumber.find({}, function(err, numbers){
-           numbers.forEach(function(number){
-             console.log(number);
-           })
-         });
          PhoneNumber.findOne({ phoneNumber: phoneNumber }, function(err, number) {
            if (err) return next(err);
-           if (number) {
-             return res.status(409).send(phoneNumber + ' has already been saved.');
+           if (number && !number.verified) {
+             // resend the code to the phone new random code
+             console.log("re-send code if not just saved");
+             var resend = generateRandomSixDigitCode();
+             var resendHashed = bcrypt.hashSync(resend, bcrypt.genSaltSync(10));
+             // update database and resend code
+             console.log('before was ' + number.phoneCodeHash);
+             number.phoneCodeHash = resendHashed;
+             console.log('after is ' + number.phoneCodeHash);
+             number.update(function(err){
+               console.log("errred");
+               if (err) next(err);
+             })
+             var options = {
+               to: number.phoneNumber,
+               from: secrets.twilio.number,
+               body: "Please reply back with this code: " + resend
+             }
+             twilioClient.sendMessage(options, function(err, response){
+               if (err) return next(err);
+               //update the database and send at the same time
+               res.status(200).send("verification code has been sent to " + number.phoneNumber);
+             })
+           } else if (number && number.verified) {
+             return res.status(409).send(number.phoneNumber + ' has already been saved.');
            }
-           // else if number && !verified then resend new code to update database
+           // store in cache if saved and unverified set expiry for 30 minutes. If not resend code
            callback(err, phoneNumber);
          });
        } catch (e) {
@@ -127,6 +152,9 @@ app.post("/api/phonenumbers/", function(req, res, next) {
        try {
          twilioClient.sendMessage(options, function(err, response){
            if (err) return next(err);
+           // add redis
+           redis.set(phoneNumber, true);
+           redis.expire(phoneNumber, 60);
            res.status(200).send("verification code has been sent to " + phoneNumber);
          })
        } catch (e) {
