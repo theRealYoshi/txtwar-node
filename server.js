@@ -19,6 +19,8 @@ var Router = require('react-router');
 var routes = require('./app/routes');
 var config = require('./config');
 var secrets = require('./secrets')
+var bcrypt = require('bcrypt');
+
 
 //twilio
 var twilioAccountSid = secrets.twilio.sid;
@@ -98,43 +100,46 @@ app.post("/api/phonenumbers/", function(req, res, next) {
        }
      },
      function(phoneNumber, callback) {
-       // do something with Twilio on success of send say that code has been sent
-       //create hashed code here;
        try {
-         var phoneNumber = new PhoneNumber({
+         var phoneCode = generateRandomSixDigitCode();
+         var salt = bcrypt.genSaltSync(10);
+         var phoneCodeHash = bcrypt.hashSync(phoneCode, salt);
+         var newNumber = new PhoneNumber({
            phoneNumber: phoneNumber,
-           phoneNumberStripped: phoneNumber.slice(2)
+           phoneNumberStripped: phoneNumber.slice(2),
+           phoneCodeHash: phoneCodeHash
          });
-
-         var codeHash = "238947895741";
-         phoneNumber.save(function(err) {
+         newNumber.save(function(err) {
            if (err) return next(err);
-           callback(err, phoneNumber, codeHash);
+           callback(err, phoneNumber, phoneCode);
          });
        } catch (e) {
-         console.log("errrrrrrr");
          res.status(404).send(phoneNumber + ' could not be saved.');
        }
      },
-     function(phoneNumber, codeHash){
+     function(phoneNumber, phoneCode){
        var options = {
          to: phoneNumber,
          from: secrets.twilio.number,
-         body: "Please reply back with this code: " + codeHash
+         body: "Please reply back with this code: " + phoneCode
        }
        try {
          twilioClient.sendMessage(options, function(err, response){
            if (err) return next(err);
-           console.log(response);
-           res.status(200).send("verification code has been sent to " + phoneNumber.phoneNumber);
+           res.status(200).send("verification code has been sent to " + phoneNumber);
          })
        } catch (e) {
-         console.log("message did not send");
          res.status(404).send(phoneNumber + ' could not be saved.');
        }
      }
    ]);
 });
+
+function generateRandomSixDigitCode(){
+  var min = 100000;
+  var max = 999999;
+  return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+}
 
 app.use(function(req, res) {
  Router.match({ routes: routes.default, location: req.url }, function(err, redirectLocation, renderProps) {
