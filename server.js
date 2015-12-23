@@ -96,17 +96,25 @@ app.post("/api/phonenumbers/", function(req, res, next) {
              // resend the code to the phone new random code
              console.log("re-send code if not just saved");
              var resend = generateRandomSixDigitCode();
-             var resendHashed = bcrypt.hashSync(resend, bcrypt.genSaltSync(10));
+             var resalt = bcrypt.genSaltSync(10);
+             var resendHashed = bcrypt.hashSync(resend, resalt);
+
              // update database and resend code
+             console.log(resendHashed)
+             console.log(number.phoneCodeHash);
              var options = {
                to: number.phoneNumber,
                from: secrets.twilio.number,
                body: "Please reply back with this code: " + resend
              }
              twilioClient.sendMessage(options, function(err, response){
-               if (err) return next(err);
+               if (err && err.status === 400 && err.code === 21608){
+                 return res.status(400).send("Unverified number");
+               } else if (err){
+                 return next(err);
+               }
                PhoneNumber.update({ _id: number._id},
-                                  { $set: {phoneNumberCodeHash: resendHashed}},
+                                  { $set: { phoneCodeHash: resendHashed}},
                                   function(err){
                                     if (err) next(err);
                                     setRedis(number.phoneNumber);
@@ -150,9 +158,8 @@ app.post("/api/phonenumbers/", function(req, res, next) {
        }
        try {
          twilioClient.sendMessage(options, function(err, response){
-           console.log(err); // must check to see if the number is unverified
-           if (err.status === 400 && err.code === 21608){
-             return res.status(400).send("Cannot send to unverified numbers");
+           if (err && err.status === 400 && err.code === 21608){
+             return res.status(400).send("Unverified Number");
            } else if (err){
              return next(err);
            }
@@ -174,7 +181,7 @@ function generateRandomSixDigitCode(){
 function setRedis(phoneNumber){
   console.log("setting in redis");
   redis.set(phoneNumber, true);
-  redis.expire(phoneNumber, 300);
+  redis.expire(phoneNumber, 30);
 }
 
 app.use(function(req, res) {
