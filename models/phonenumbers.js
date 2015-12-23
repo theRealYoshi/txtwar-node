@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 
 var phoneNumberSchema = new mongoose.Schema({
-  phoneNumber: { type: String, unique: true, index: true},
+  phoneNumber: String,
   phoneNumberStripped: String,
   phoneCodeHash: String,
-  verified: {type: Boolean, default: false},
+  verified: { type: Boolean, default: false},
   delayTime: { type: Number, default: 5 }
 })
 

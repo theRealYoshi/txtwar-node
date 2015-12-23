@@ -98,13 +98,6 @@ app.post("/api/phonenumbers/", function(req, res, next) {
              var resend = generateRandomSixDigitCode();
              var resendHashed = bcrypt.hashSync(resend, bcrypt.genSaltSync(10));
              // update database and resend code
-             console.log('before was ' + number.phoneCodeHash);
-             number.phoneCodeHash = resendHashed;
-             console.log('after is ' + number.phoneCodeHash);
-             number.update(function(err){
-               console.log("errred");
-               if (err) next(err);
-             })
              var options = {
                to: number.phoneNumber,
                from: secrets.twilio.number,
@@ -112,14 +105,19 @@ app.post("/api/phonenumbers/", function(req, res, next) {
              }
              twilioClient.sendMessage(options, function(err, response){
                if (err) return next(err);
-               //update the database and send at the same time
-               res.status(200).send("verification code has been sent to " + number.phoneNumber);
+               PhoneNumber.update({ _id: number._id},
+                                  { $set: {phoneNumberCodeHash: resendHashed}},
+                                  function(err){
+                                    if (err) next(err);
+                                    setRedis(number.phoneNumber);
+                                    return res.status(200).send("verification code has been sent to " + number.phoneNumber);
+               });
              })
            } else if (number && number.verified) {
              return res.status(409).send(number.phoneNumber + ' has already been saved.');
+           } else {
+             callback(err, phoneNumber);
            }
-           // store in cache if saved and unverified set expiry for 30 minutes. If not resend code
-           callback(err, phoneNumber);
          });
        } catch (e) {
          return res.status(400).send('XML Parse Error');
@@ -137,6 +135,7 @@ app.post("/api/phonenumbers/", function(req, res, next) {
          });
          newNumber.save(function(err) {
            if (err) return next(err);
+           setRedis(phoneNumber);
            callback(err, phoneNumber, phoneCode);
          });
        } catch (e) {
@@ -151,10 +150,12 @@ app.post("/api/phonenumbers/", function(req, res, next) {
        }
        try {
          twilioClient.sendMessage(options, function(err, response){
-           if (err) return next(err);
-           // add redis
-           redis.set(phoneNumber, true);
-           redis.expire(phoneNumber, 60);
+           console.log(err); // must check to see if the number is unverified
+           if (err.status === 400 && err.code === 21608){
+             return res.status(400).send("Cannot send to unverified numbers");
+           } else if (err){
+             return next(err);
+           }
            res.status(200).send("verification code has been sent to " + phoneNumber);
          })
        } catch (e) {
@@ -168,6 +169,12 @@ function generateRandomSixDigitCode(){
   var min = 100000;
   var max = 999999;
   return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+}
+
+function setRedis(phoneNumber){
+  console.log("setting in redis");
+  redis.set(phoneNumber, true);
+  redis.expire(phoneNumber, 300);
 }
 
 app.use(function(req, res) {
