@@ -1,4 +1,11 @@
 var PhoneNumber = require('../models/phonenumbers');
+var secrets = require('../secrets');
+var bcrypt = require('bcrypt');
+//twilio
+var twilioAccountSid = secrets.twilio.sid;
+var twilioAuthToken = secrets.twilio.token;
+var twilio = require('twilio');
+var twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
@@ -11,10 +18,23 @@ exports.webhook = function(request, response) {
         sendMessage(phoneNumber, body);
       } else {
         if (!number.verified){
-          var body = "Please send us your verification code, if you deleted it please sign up again at www.txtwar.com";
-          sendMessage(phoneNumber, body);
+          var body = request.body.Body || "";
+          msg = body.toString().trim();
+          if (checkVerification(msg, number)){
+            // verify the code and change the database
+            PhoneNumber.update({ _id: number._id},
+                               { $set: {verified: true} },
+                               function(err){
+                                 if (err) return next(err);
+                                 var verified = "Verified! Start texting us for when you want a text back";
+                                 sendMessage(phoneNumber, verified);
+            })
+          } else {
+            var notVerified = "Please reply with the verification code. If you have misplaced your code please sign up again at www.txtwar.com"
+            sendMessage(phoneNumber, notVerified);
+          }
         } else {
-          processMessage(request.body)
+          // delayed time to message
         }
       }
     })
@@ -23,12 +43,14 @@ exports.webhook = function(request, response) {
     console.log("an error occurred");
   }
 
-  function processMessage(body){
+  function checkVerification(body, number){
     var msg = body || "";
     msg = msg.toString().trim();
-    console.log(msg);
-
-
+    if (bcrypt.compareSync(msg, number.phoneCodeHash)){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   function sendMessage(phoneNumber, body){
