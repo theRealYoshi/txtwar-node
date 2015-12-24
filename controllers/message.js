@@ -106,6 +106,8 @@ exports.webhook = function(request, response) {
     app.rabbitMqConnection.on('ready', function(){
       app.connectionStatus = 'Connected!';
       console.log("Connected!");
-    }
+      console.log(app.exchangeStatus);
+      console.log(app.queueStatus);
+    });
   }
 }

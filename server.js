@@ -4,7 +4,6 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var ampq = require('amqp');
 
 var async = require('async');
 var request = require('request');

@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "alt": "^0.17.8",
-    "amqp": "*",
+    "amqp": "^0.2.x",
     "amqplib": "^0.2.1",
     "async": "^1.5.0",
     "babel-core": "^6.1.19",
