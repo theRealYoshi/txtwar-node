@@ -47,8 +47,11 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
-                                 sendMessage(phoneNumber, immediateText, function(){
-                                   startRabbitMQ();
+                                 sendMessage(phoneNumber, immediateText);
+                                 console.log('starting rabbit');
+                                 var rabbitMqConnection = amqp.createConnection({ host: config.rabbit_url });
+                                 rabbitMqConnection.on('ready', function(){
+                                   console.log("Connected to RabbitMQ");
                                  });
             })
           } else {
