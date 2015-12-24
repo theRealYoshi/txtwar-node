@@ -34,7 +34,23 @@ exports.webhook = function(request, response) {
             sendMessage(phoneNumber, notVerified);
           }
         } else {
-          // delayed time to message
+          var body = request.body.Body || "";
+          var msg = body.toString().trim();
+          if (checkValidTime(msg)){
+            PhoneNumber.update({ _id: number._id},
+                               { $set: {delayTime: msg} },
+                               function(err){
+                                 if (err) return next(err);
+                                 var immediateText = "DelayTime has been set to " + msg +
+                                 ". We'll send you a message when it's time to text your crush!";
+                                 sendMessage(phoneNumber, verified);
+                                 delayMessage(msg);
+            })
+          } else {
+            var notValidTime = "Default delay has been set to " + number.delayTime +
+            " minutes. Please reply back (in minutes) of when you would like us to text you back. Ex. 3 hours = 180";
+            sendMessage(phoneNumber, notValidTime);
+          }
         }
       }
     })
@@ -48,6 +64,16 @@ exports.webhook = function(request, response) {
       return true;
     } else {
       return false;
+    }
+  }
+  function checkValidTime(msg){
+    if (isNaN(msg)){ return false};
+    var num = parseInt(msg);
+    if ((num < 1) || (num > 10000) {
+      return false
+    } else {
+      // record time.now and time.in minutes after
+      // return time
     }
   }
 
