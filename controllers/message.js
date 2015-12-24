@@ -7,6 +7,10 @@ var twilioAuthToken = secrets.twilio.token;
 var twilio = require('twilio');
 var twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
+var amqp = require('amqp');
+var config = require('./config');
+
+
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
   var phoneNumber = request.body.From;
@@ -44,10 +48,10 @@ exports.webhook = function(request, response) {
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
                                  sendMessage(phoneNumber, immediateText);
-                                 //delayMessage(msg);
+                                 startRabbitMQ();
             })
           } else {
-            var notValidTime = "Default delay has been set to " + number.delayTime +
+            var notValidTime = "Unfortunately we can't set that time. Default delay has been set to " + number.delayTime +
             " minutes. Please reply back (in minutes) of when you would like us to text you back. Ex. 3 hours = 180";
             sendMessage(phoneNumber, notValidTime);
           }
@@ -66,7 +70,7 @@ exports.webhook = function(request, response) {
       return false;
     }
   }
-  
+
   function checkValidTime(msg){
     if (isNaN(msg)){ return false};
     var num = parseInt(msg);
@@ -97,13 +101,11 @@ exports.webhook = function(request, response) {
     }
   }
 
-
-  // if it doesn't fit the parameters return error text
-  // if it does delay scheduling a message
-
-  // if it hasn't been verified resend the verification code with bcrypt
-
-  // move some of the logic into the model layer
-
-  // check
+  function startRabbitMQ(){
+    amqp.createConnection({ host: config.rabbit_url });
+    app.rabbitMqConnection.on('ready', function(){
+      app.connectionStatus = 'Connected!';
+      console.log("Connected!");
+    }
+  }
 }

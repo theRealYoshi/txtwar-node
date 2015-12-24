@@ -4,6 +4,7 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var ampq = require('amqp');
 
 var async = require('async');
 var request = require('request');
@@ -20,7 +21,6 @@ var routes = require('./app/routes');
 var config = require('./config');
 var secrets = require('./secrets')
 var bcrypt = require('bcrypt');
-
 
 //twilio
 var twilioAccountSid = secrets.twilio.sid;
@@ -47,6 +47,7 @@ redis.on('error', function (err) {
   console.log('Error ' + err);
 });
 
+
 //mongodb
 mongoose.connect(config.database);
 mongoose.connection.on('error', function() {
@@ -60,6 +61,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+//rabbitmq
+app.connectionStatus = 'No server connection';
+app.exchangeStatus = 'No exchange established';
+app.queueStatus = 'No queue established';
 
 // Configure application routes for message reply back
 require('./controllers/router')(app);
