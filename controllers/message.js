@@ -43,8 +43,8 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
-                                 sendMessage(phoneNumber, verified);
-                                 delayMessage(msg);
+                                 sendMessage(phoneNumber, immediateText);
+                                 //delayMessage(msg);
             })
           } else {
             var notValidTime = "Default delay has been set to " + number.delayTime +
@@ -66,6 +66,7 @@ exports.webhook = function(request, response) {
       return false;
     }
   }
+  
   function checkValidTime(msg){
     if (isNaN(msg)){ return false};
     var num = parseInt(msg);
@@ -73,8 +74,6 @@ exports.webhook = function(request, response) {
       return false;
     } else {
       return true;
-      // record time.now and time.in minutes after
-      // return time
     }
   }
 
