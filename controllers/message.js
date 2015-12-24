@@ -8,7 +8,7 @@ var twilio = require('twilio');
 var twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
 var amqp = require('amqp');
-var config = require('./config');
+var config = require('../config');
 
 
 // Create a function to handle Twilio SMS / MMS webhook requests
