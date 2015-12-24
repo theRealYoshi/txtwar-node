@@ -1,11 +1,8 @@
 var PhoneNumber = require('../models/phonenumbers');
-var config = require('../config');
 
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
   var phoneNumber = request.body.From;
-  console.log(request);
-  console.log(phone);
   try {
     PhoneNumber.findOne({phoneNumber: phoneNumber}, function(err, number){
       if (err) return next(err);
