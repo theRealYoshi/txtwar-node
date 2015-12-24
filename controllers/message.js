@@ -19,7 +19,7 @@ exports.webhook = function(request, response) {
       } else {
         if (!number.verified){
           var body = request.body.Body || "";
-          msg = body.toString().trim();
+          var msg = body.toString().trim();
           if (checkVerification(msg, number)){
             // verify the code and change the database
             PhoneNumber.update({ _id: number._id},
@@ -43,9 +43,7 @@ exports.webhook = function(request, response) {
     console.log("an error occurred");
   }
 
-  function checkVerification(body, number){
-    var msg = body || "";
-    msg = msg.toString().trim();
+  function checkVerification(msg, number){
     if (bcrypt.compareSync(msg, number.phoneCodeHash)){
       return true;
     } else {
