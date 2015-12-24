@@ -69,9 +69,10 @@ exports.webhook = function(request, response) {
   function checkValidTime(msg){
     if (isNaN(msg)){ return false};
     var num = parseInt(msg);
-    if ((num < 1) || (num > 10000) {
-      return false
+    if ((num < 1) || (num > 10000)) {
+      return false;
     } else {
+      return true;
       // record time.now and time.in minutes after
       // return time
     }
