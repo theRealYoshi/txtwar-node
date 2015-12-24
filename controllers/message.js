@@ -10,15 +10,14 @@ exports.webhook = function(request, response) {
     PhoneNumber.findOne({phoneNumber: phoneNumber}, function(err, number){
       if (err) return next(err);
       if (!number){
-        var response = "Sign up for txtwar here: www.txtwar.com";
-        sendMessage(phoneNumber, response);
+        var body = "Sign up for txtwar here: www.txtwar.com";
+        sendMessage(phoneNumber, body);
       } else {
         if (!number.verified){
-
-          // check if the number has been verified
+          var body = "Please send us your verification code, if you deleted it please sign up again at www.txtwar.com";
+          sendMessage(phoneNumber, body);
         } else {
-          // if it has been verified check to see if there is a delay time associated with the message
-
+          processMessage(request.body)
         }
       }
     })
@@ -27,7 +26,11 @@ exports.webhook = function(request, response) {
     console.log("an error occurred");
   }
 
-  function processMessage(request){
+  function processMessage(body){
+    var msg = body || "";
+    msg = msg.toString().trim();
+    console.log(msg);
+
 
   }
 
