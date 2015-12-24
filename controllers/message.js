@@ -102,9 +102,8 @@ exports.webhook = function(request, response) {
   }
 
   function startRabbitMQ(){
-    amqp.createConnection({ host: config.rabbit_url });
-    app.rabbitMqConnection.on('ready', function(){
-      app.connectionStatus = 'Connected!';
+    var rabbitMqConnection = amqp.createConnection({ host: config.rabbit_url });
+    rabbitMqConnection.on('ready', function(){
       console.log("Connected!");
       console.log(app.exchangeStatus);
       console.log(app.queueStatus);
