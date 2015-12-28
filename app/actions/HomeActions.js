@@ -15,21 +15,18 @@ class HomeActions {
     );
   }
   //find images based off Giphy or Redis
-  findGif(payload){
+  testAMQP(data){
     $.ajax({
-      url: '/api/gifs/search',
-      data: { email: payload.searchQuery }
+      type: 'GET',
+      url: '/api/amqp/',
+      data: {action: data}
     })
-      .done((data) => {
-        assign(payload, data);
-        this.actions.getGiphySuccess(payload);
-        this.actions.keepInput(email);
-      })
-      .fail((data) => {
-        assign(payload, data);
-        this.actions.getGiphyFail(payload);
-        this.actions.removeShake();
-      });
+    .done(() => {
+      console.log("tested");
+    })
+    .fail(() => {
+      console.log("failed");
+    });
   }
 
 }

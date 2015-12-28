@@ -72,7 +72,118 @@ require('./controllers/router')(app);
 /**
  * POST /api/phonenumbers/
  * assigns random search tag to email caches result
- */
+ **/
+
+var amqp = require('amqplib');
+var EventEmitter = require('events').EventEmitter; // emits a connection event
+
+app.get("/api/amqp", function(req, res, next){
+  var action = req.query.action;
+  console.log(action);
+  if (action === "publish"){
+    amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
+      return conn.createChannel().then(function(ch){
+        var exchangeOk = ch.assertExchange("delay_exchange", "direct");
+        exchangeOk = exchangeOk.then(function(){
+          var qOpts = {
+            durable: true,
+            arguments: {
+              exclusive: true,
+              "x-dead-letter-exchange": "dead_exchange",
+              "x-dead-letter-routing-key": "destination_queue",
+              "x-expires": 60000 }
+          };
+          return ch.assertQueue("", qOpts);
+        });
+        exchangeOk = exchangeOk.then(function(queueOk){
+          var queue = queueOk.queue;
+          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 30000 }, function(){
+            return ch.close();
+          });
+        })
+        return exchangeOk.then(function(){
+          console.log("alll done");
+        })
+      })
+    }, function(err){
+      console.log(err);
+    }).then(null, console.warn);
+  } else {
+    amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
+      return conn.createChannel().then(function(ch){
+        var ok = ch.assertExchange("dead_exchange", "direct", { durable: true });
+        ok = ok.then(function(){
+          return ch.assertQueue('destination_queue', { durable: true });
+        });
+      ok = ok.then(function(qok){
+        console.log("here1");
+        console.log(qok);
+        return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
+          return qok.queue;
+        })
+      })
+      ok = ok.then(function(queue){
+        return ch.consume(queue, logMessage, {noAck: true});
+      })
+      return ok.then(function(){
+        console.log('message received');
+      })
+      function logMessage(msg){
+        console.log(" [x] '%s' ", msg.content.toString());
+      }
+      })
+    }, function(err){
+      console.log(err);
+    }).then(null, console.warn);
+
+  }
+
+  // var rabbit = jackrabbit("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc");
+  // rabbit.on('connected', function(){
+  //   console.log("Connected to RabbitMQ");
+  // });
+  // rabbit.on('disconnected', function(){
+  //   console.log("Disconnected to RabbitMQ");
+  // });
+
+  // var hello = exchange.queue({ name: 'test_queue', durable: true, arguments:
+  //   {"x-dead-letter-exchange": "dead_exchange", "x-dead-letter-routing-key": "destination_queue"}
+  // });
+  // var exchange = rabbit.default();
+  // if (action === "publish"){
+  //   var exchange = rabbit.direct("delay_exchange");
+  //   exchange.publish({msg: "this is a random queue"}, {})
+  //   exchange.publish({ msg: 'This is Shorter' }, { key: 'delay_queue', expiration: 1000});
+  //   exchange.publish({ msg: 'This is Shorter' }, { key: 'delay_queue', expiration: 10000});
+  //   exchange.publish({ msg: 'This Lasts Longer' }, { key: 'delay_queue', expiration: 90000});
+  //   exchange.on("drain", rabbit.close);
+  //   res.status(200).send();
+  // } else {
+  //   var deadExchange = rabbit.direct("dead_exchange");
+  //   var destination = deadExchange.queue({name: "destination_queue", durable: true});
+  //   destination.consume(onMessage);
+  // }
+
+
+  // add event listeners and then use worker processes.
+
+  function onMessage(data, ack){
+    console.log("received: ", data);
+    ack();
+    res.status(200).send();
+  }
+
+  function ready() {
+    console.log("ready");
+  }
+
+  function lost() {
+    console.log("lost");
+  }
+
+})
+
+
 
 app.post("/api/phonenumbers/", function(req, res, next) {
   var phoneNumber = "+1" + req.body.phonenumber;

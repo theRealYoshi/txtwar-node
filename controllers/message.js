@@ -48,11 +48,6 @@ exports.webhook = function(request, response) {
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
                                  sendMessage(phoneNumber, immediateText);
-                                 console.log('starting rabbit');
-                                 var rabbitMqConnection = amqp.createConnection({ host: config.rabbit_url });
-                                 rabbitMqConnection.on('ready', function(){
-                                   console.log("Connected to RabbitMQ");
-                                 });
             })
           } else {
             var notValidTime = "Unfortunately we can't set that time. Default delay has been set to " + number.delayTime +
@@ -103,13 +98,5 @@ exports.webhook = function(request, response) {
     } catch (e) {
       console.log("errred out");
     }
-  }
-
-  function startRabbitMQ(){
-    console.log("Connecting to rabbitMQ");
-    var rabbitMqConnection = amqp.createConnection({ host: config.rabbit_url });
-    rabbitMqConnection.on('ready', function(){
-      console.log("Connected to RabbitMQ");
-    });
   }
 }

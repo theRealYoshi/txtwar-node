@@ -26,21 +26,16 @@ var HomeActions = (function () {
   //find images based off Giphy or Redis
 
   _createClass(HomeActions, [{
-    key: 'findGif',
-    value: function findGif(payload) {
-      var _this = this;
-
+    key: 'testAMQP',
+    value: function testAMQP(data) {
       $.ajax({
-        url: '/api/gifs/search',
-        data: { email: payload.searchQuery }
-      }).done(function (data) {
-        (0, _underscore.assign)(payload, data);
-        _this.actions.getGiphySuccess(payload);
-        _this.actions.keepInput(email);
-      }).fail(function (data) {
-        (0, _underscore.assign)(payload, data);
-        _this.actions.getGiphyFail(payload);
-        _this.actions.removeShake();
+        type: 'GET',
+        url: '/api/amqp/',
+        data: { action: data }
+      }).done(function () {
+        console.log("tested");
+      }).fail(function () {
+        console.log("failed");
       });
     }
   }]);
@@ -371,10 +366,10 @@ var Home = (function (_React$Component) {
     }
   }, {
     key: 'handleClick',
-    value: function handleClick(character) {
-      var winner = character.characterId;
-      var loser = (0, _underscore.first)((0, _underscore.without)(this.state.characters, (0, _underscore.findWhere)(this.state.characters, { characterId: winner }))).characterId;
-      _HomeActions2.default.vote(winner, loser);
+    value: function handleClick(event) {
+      event.preventDefault();
+      var action = event.currentTarget.value;
+      _HomeActions2.default.testAMQP(action);
     }
   }, {
     key: 'render',
@@ -392,6 +387,16 @@ var Home = (function (_React$Component) {
           'div',
           { className: 'row' },
           _react2.default.createElement(_TxtwarForm2.default, null)
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.handleClick, value: 'publish' },
+          'Publish AMQP'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.handleClick, value: 'consume' },
+          'Consume AMQP'
         )
       );
     }

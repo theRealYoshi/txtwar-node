@@ -25,10 +25,10 @@ class Home extends React.Component {
     this.setState(state);
   }
 
-  handleClick(character) {
-    var winner = character.characterId;
-    var loser = first(without(this.state.characters, findWhere(this.state.characters, { characterId: winner }))).characterId;
-    HomeActions.vote(winner, loser);
+  handleClick(event) {
+    event.preventDefault();
+    var action = event.currentTarget.value;
+      HomeActions.testAMQP(action);
   }
 
   render() {
@@ -39,6 +39,8 @@ class Home extends React.Component {
         <div className='row'>
           <TxtwarForm />
         </div>
+        <button onClick={this.handleClick} value="publish">Publish AMQP</button>
+        <button onClick={this.handleClick} value="consume">Consume AMQP</button>
       </div>
     );
   }
