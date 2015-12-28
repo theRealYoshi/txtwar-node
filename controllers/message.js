@@ -47,9 +47,10 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
-                                 connectAmqp(msg);
-                                 sendMessage(phoneNumber, immediateText);
-                                 // add the call to delay message here then once it gets a return 200 send the message, else send that we couldn't set up the message
+                                 connectAmqp(msg, phoneNumber, function(){
+                                   sendMessage(phoneNumber, immediateText);
+                                   return response.status(200).send();
+                                 });
             })
           } else {
             var notValidTime = "Unfortunately we can't set that time. Default delay has been set to " + number.delayTime +
@@ -62,6 +63,7 @@ exports.webhook = function(request, response) {
   } catch (e) {
     console.log(e);
     console.log("an error occurred");
+    // add errors here;
   }
 
   function checkVerification(msg, number){
@@ -102,7 +104,7 @@ exports.webhook = function(request, response) {
     }
   }
 
-  function connectAmqp(msgTime){
+  function connectAmqp(msgTime, phoneNumber){
     amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
       return conn.createChannel().then(function(ch){
         var exchangeOk = ch.assertExchange("delay_exchange", "direct");
@@ -113,13 +115,13 @@ exports.webhook = function(request, response) {
               exclusive: true,
               "x-dead-letter-exchange": "dead_exchange",
               "x-dead-letter-routing-key": "destination_queue",
-              "x-expires": 60000 * parseInt(msgTime) }
+              "x-expires": 60000 * parseInt(msgTime) + 60000 }
           };
           return ch.assertQueue("", qOpts);
         });
         exchangeOk = exchangeOk.then(function(queueOk){
           var queue = queueOk.queue;
-          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 30000 * parseInt(msgTime) }, function(){
+          ch.sendToQueue(queue, new Buffer({phonenumber: phoneNumber}),{ expiration: 60000 * parseInt(msgTime) }, function(){
             return ch.close();
           });
         })
@@ -127,7 +129,9 @@ exports.webhook = function(request, response) {
           console.log("all done");
         })
       })
-    });
+    }, function(err){
+      console.log(err);
+    }).then(null, console.warn);
   }
 
 }
