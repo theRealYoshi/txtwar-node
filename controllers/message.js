@@ -104,7 +104,7 @@ exports.webhook = function(request, response) {
     }
   }
 
-  function connectAmqp(msgTime, phoneNumber){
+  function connectAmqp(msgTime, phoneNumber, callback){
     amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
       return conn.createChannel().then(function(ch){
         var exchangeOk = ch.assertExchange("delay_exchange", "direct");
@@ -122,6 +122,7 @@ exports.webhook = function(request, response) {
         exchangeOk = exchangeOk.then(function(queueOk){
           var queue = queueOk.queue;
           ch.sendToQueue(queue, new Buffer(phoneNumber),{ expiration: 60000 * parseInt(msgTime) }, function(){
+            callback();
             return ch.close();
           });
         })
