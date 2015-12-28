@@ -25,12 +25,6 @@ class Home extends React.Component {
     this.setState(state);
   }
 
-  handleClick(event) {
-    event.preventDefault();
-    var action = event.currentTarget.value;
-      HomeActions.testAMQP(action);
-  }
-
   render() {
     var header = <h1 className='text-center'>Enter your phone number</h1>;
 
@@ -39,8 +33,6 @@ class Home extends React.Component {
         <div className='row'>
           <TxtwarForm />
         </div>
-        <button onClick={this.handleClick} value="publish">Publish AMQP</button>
-        <button onClick={this.handleClick} value="consume">Consume AMQP</button>
       </div>
     );
   }

@@ -78,13 +78,14 @@ amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudam
         return ch.assertQueue('destination_queue', { durable: true }).then(function(qok){
           return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
             return ch.consume(qok.queue, logMessage, {noAck: true}).then(function(){
-              console.log("scraped");
+              console.log(test_message);
             });
           });
         });
       })
     }
     function logMessage(msg){
+      if (!msg) { return null; }
       // we want to get an array of all the scraped
       // then send to a function which sends out twilio text informing them to text their crush
       var opts = {
@@ -102,122 +103,17 @@ amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudam
           console.log(msg.content.toString());
         })
       } catch (e) {
-        res.status(404).send(phoneNumber + ' could not be saved.');
+        res.status(404).send('Message could not be sent');
       }
     }
-    
+
     setInterval(function(){
-      var test_message = "TEST " + count;
+      var test_message = "Scrape Count: " + count;
       scrapeQueue(ch, test_message);
       count += 1;
     }, 60000);
   });
 });
-
-app.get("/api/amqp", function(req, res, next){
-  var action = req.query.action;
-  console.log(action);
-  if (action === "publish"){
-    amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
-      return conn.createChannel().then(function(ch){
-        var exchangeOk = ch.assertExchange("delay_exchange", "direct");
-        exchangeOk = exchangeOk.then(function(){
-          var qOpts = {
-            durable: true,
-            arguments: {
-              exclusive: true,
-              "x-dead-letter-exchange": "dead_exchange",
-              "x-dead-letter-routing-key": "destination_queue",
-              "x-expires": 30000 }
-          };
-          return ch.assertQueue("", qOpts);
-        });
-        exchangeOk = exchangeOk.then(function(queueOk){
-          var queue = queueOk.queue;
-          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 10000 }, function(){
-            return ch.close();
-          });
-        })
-        return exchangeOk.then(function(){
-          console.log("alll done");
-        })
-      })
-    }, function(err){
-      console.log(err);
-    }).then(null, console.warn);
-  } else {
-    amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
-      return conn.createChannel().then(function(ch){
-        var ok = ch.assertExchange("dead_exchange", "direct", { durable: true });
-        ok = ok.then(function(){
-          return ch.assertQueue('destination_queue', { durable: true });
-        });
-      ok = ok.then(function(qok){
-        return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
-          return qok.queue;
-        })
-      })
-      ok = ok.then(function(queue){
-        return ch.consume(queue, logMessage, {noAck: true});
-      })
-      return ok.then(function(){
-        console.log('message received');
-      })
-      function logMessage(msg){
-        console.log(" [x] '%s' ", msg.content.toString());
-      }
-      })
-    }, function(err){
-      console.log(err);
-    }).then(null, console.warn);
-
-  }
-
-  // var rabbit = jackrabbit("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc");
-  // rabbit.on('connected', function(){
-  //   console.log("Connected to RabbitMQ");
-  // });
-  // rabbit.on('disconnected', function(){
-  //   console.log("Disconnected to RabbitMQ");
-  // });
-
-  // var hello = exchange.queue({ name: 'test_queue', durable: true, arguments:
-  //   {"x-dead-letter-exchange": "dead_exchange", "x-dead-letter-routing-key": "destination_queue"}
-  // });
-  // var exchange = rabbit.default();
-  // if (action === "publish"){
-  //   var exchange = rabbit.direct("delay_exchange");
-  //   exchange.publish({msg: "this is a random queue"}, {})
-  //   exchange.publish({ msg: 'This is Shorter' }, { key: 'delay_queue', expiration: 1000});
-  //   exchange.publish({ msg: 'This is Shorter' }, { key: 'delay_queue', expiration: 10000});
-  //   exchange.publish({ msg: 'This Lasts Longer' }, { key: 'delay_queue', expiration: 90000});
-  //   exchange.on("drain", rabbit.close);
-  //   res.status(200).send();
-  // } else {
-  //   var deadExchange = rabbit.direct("dead_exchange");
-  //   var destination = deadExchange.queue({name: "destination_queue", durable: true});
-  //   destination.consume(onMessage);
-  // }
-
-
-  // add event listeners and then use worker processes.
-
-  function onMessage(data, ack){
-    console.log("received: ", data);
-    ack();
-    res.status(200).send();
-  }
-
-  function ready() {
-    console.log("ready");
-  }
-
-  function lost() {
-    console.log("lost");
-  }
-
-})
-
 
 
 app.post("/api/phonenumbers/", function(req, res, next) {

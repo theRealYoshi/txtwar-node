@@ -14,21 +14,6 @@ class HomeActions {
       'keepInput'
     );
   }
-  //find images based off Giphy or Redis
-  testAMQP(data){
-    $.ajax({
-      type: 'GET',
-      url: '/api/amqp/',
-      data: {action: data}
-    })
-    .done(() => {
-      console.log("tested");
-    })
-    .fail(() => {
-      console.log("failed");
-    });
-  }
-
 }
 
 export default alt.createActions(HomeActions);

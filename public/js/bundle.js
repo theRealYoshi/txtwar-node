@@ -1,8 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -17,31 +15,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var HomeActions = (function () {
-  function HomeActions() {
-    _classCallCheck(this, HomeActions);
+var HomeActions = function HomeActions() {
+  _classCallCheck(this, HomeActions);
 
-    this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'getGiphySuccess', 'getGiphyFail', 'reRenderPage', 'clearGifs', 'removeShake', 'keepInput');
-  }
-  //find images based off Giphy or Redis
-
-  _createClass(HomeActions, [{
-    key: 'testAMQP',
-    value: function testAMQP(data) {
-      $.ajax({
-        type: 'GET',
-        url: '/api/amqp/',
-        data: { action: data }
-      }).done(function () {
-        console.log("tested");
-      }).fail(function () {
-        console.log("failed");
-      });
-    }
-  }]);
-
-  return HomeActions;
-})();
+  this.generateActions('updateSearchQuery', 'updateAjaxAnimation', 'getGiphySuccess', 'getGiphyFail', 'reRenderPage', 'clearGifs', 'removeShake', 'keepInput');
+};
 
 exports.default = _alt2.default.createActions(HomeActions);
 
@@ -365,13 +343,6 @@ var Home = (function (_React$Component) {
       this.setState(state);
     }
   }, {
-    key: 'handleClick',
-    value: function handleClick(event) {
-      event.preventDefault();
-      var action = event.currentTarget.value;
-      _HomeActions2.default.testAMQP(action);
-    }
-  }, {
     key: 'render',
     value: function render() {
       var header = _react2.default.createElement(
@@ -387,16 +358,6 @@ var Home = (function (_React$Component) {
           'div',
           { className: 'row' },
           _react2.default.createElement(_TxtwarForm2.default, null)
-        ),
-        _react2.default.createElement(
-          'button',
-          { onClick: this.handleClick, value: 'publish' },
-          'Publish AMQP'
-        ),
-        _react2.default.createElement(
-          'button',
-          { onClick: this.handleClick, value: 'consume' },
-          'Consume AMQP'
         )
       );
     }

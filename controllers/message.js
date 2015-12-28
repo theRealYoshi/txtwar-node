@@ -47,7 +47,7 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
-                                 connectAmqp(msg, phoneNumber, sendMessage(phoneNumber,immediateText));
+                                 connectAmqp(msg, phoneNumber, sendMessage(phoneNumber, immediateText));
                                  return response.status(200).send();
             })
           } else {
