@@ -7,7 +7,7 @@ var twilioAuthToken = secrets.twilio.token;
 var twilio = require('twilio');
 var twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
-var amqp = require('amqp');
+var amqp = require('amqplib');
 var config = require('../config');
 
 
@@ -47,7 +47,9 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
+                                 connectAmqp(msg);
                                  sendMessage(phoneNumber, immediateText);
+                                 // add the call to delay message here then once it gets a return 200 send the message, else send that we couldn't set up the message
             })
           } else {
             var notValidTime = "Unfortunately we can't set that time. Default delay has been set to " + number.delayTime +
@@ -99,4 +101,33 @@ exports.webhook = function(request, response) {
       console.log("errred out");
     }
   }
+
+  function connectAmqp(msgTime){
+    amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
+      return conn.createChannel().then(function(ch){
+        var exchangeOk = ch.assertExchange("delay_exchange", "direct");
+        exchangeOk = exchangeOk.then(function(){
+          var qOpts = {
+            durable: true,
+            arguments: {
+              exclusive: true,
+              "x-dead-letter-exchange": "dead_exchange",
+              "x-dead-letter-routing-key": "destination_queue",
+              "x-expires": 60000 * parseInt(msgTime) }
+          };
+          return ch.assertQueue("", qOpts);
+        });
+        exchangeOk = exchangeOk.then(function(queueOk){
+          var queue = queueOk.queue;
+          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 30000 * parseInt(msgTime) }, function(){
+            return ch.close();
+          });
+        })
+        return exchangeOk.then(function(){
+          console.log("all done");
+        })
+      })
+    });
+  }
+
 }

@@ -61,11 +61,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-//rabbitmq
-app.connectionStatus = 'No server connection';
-app.exchangeStatus = 'No exchange established';
-app.queueStatus = 'No queue established';
-
 // Configure application routes for message reply back
 require('./controllers/router')(app);
 
@@ -75,7 +70,6 @@ require('./controllers/router')(app);
  **/
 
 var amqp = require('amqplib');
-var EventEmitter = require('events').EventEmitter; // emits a connection event
 
 app.get("/api/amqp", function(req, res, next){
   var action = req.query.action;
@@ -116,8 +110,6 @@ app.get("/api/amqp", function(req, res, next){
           return ch.assertQueue('destination_queue', { durable: true });
         });
       ok = ok.then(function(qok){
-        console.log("here1");
-        console.log(qok);
         return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
           return qok.queue;
         })
