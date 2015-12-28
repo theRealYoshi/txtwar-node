@@ -47,10 +47,8 @@ exports.webhook = function(request, response) {
                                  if (err) return next(err);
                                  var immediateText = "DelayTime has been set to " + msg +
                                  ". We'll send you a message when it's time to text your crush!";
-                                 connectAmqp(msg, phoneNumber, function(){
-                                   sendMessage(phoneNumber, immediateText);
-                                   return response.status(200).send();
-                                 });
+                                 connectAmqp(msg, phoneNumber, sendMessage(phoneNumber,immediateText));
+                                 return response.status(200).send();
             })
           } else {
             var notValidTime = "Unfortunately we can't set that time. Default delay has been set to " + number.delayTime +
@@ -104,7 +102,7 @@ exports.webhook = function(request, response) {
     }
   }
 
-  function connectAmqp(msgTime, phoneNumber, callback){
+  function connectAmqp(msgTime, phoneNumber, sendMessage){
     amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
       return conn.createChannel().then(function(ch){
         var exchangeOk = ch.assertExchange("delay_exchange", "direct");
@@ -122,7 +120,7 @@ exports.webhook = function(request, response) {
         exchangeOk = exchangeOk.then(function(queueOk){
           var queue = queueOk.queue;
           ch.sendToQueue(queue, new Buffer(phoneNumber),{ expiration: 60000 * parseInt(msgTime) }, function(){
-            callback();
+            sendMessage();
             return ch.close();
           });
         })

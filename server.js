@@ -85,7 +85,26 @@ amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudam
       })
     }
     function logMessage(msg){
-      console.log(" [x] '%s' ", msg.content.toString());
+      // we want to get an array of all the scraped
+      // then send to a function which sends out twilio text informing them to text their crush
+      var opts = {
+        to: msg.content.toString(),
+        from: secrets.twilio.number,
+        body: "Text your crush now!"
+      }
+      try {
+        twilioClient.sendMessage(opts, function(err, response){
+          if (err && err.status === 400 && err.code === 21608){
+            return res.status(400).send("Unverified Number");
+          } else if (err){
+            return next(err);
+          }
+          console.log(msg.content.toString());
+        })
+      } catch (e) {
+        res.status(404).send(phoneNumber + ' could not be saved.');
+      }
+    }
     }
     setInterval(function(){
       var test_message = "TEST " + count;
