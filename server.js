@@ -105,7 +105,7 @@ amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudam
         res.status(404).send(phoneNumber + ' could not be saved.');
       }
     }
-    }
+    
     setInterval(function(){
       var test_message = "TEST " + count;
       scrapeQueue(ch, test_message);
