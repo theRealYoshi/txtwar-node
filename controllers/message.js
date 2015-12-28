@@ -121,7 +121,7 @@ exports.webhook = function(request, response) {
         });
         exchangeOk = exchangeOk.then(function(queueOk){
           var queue = queueOk.queue;
-          ch.sendToQueue(queue, { phonenumber: phoneNumber} , { expiration: 60000 * parseInt(msgTime) }, function(){
+          ch.sendToQueue(queue, new Buffer(phoneNumber),{ expiration: 60000 * parseInt(msgTime) }, function(){
             return ch.close();
           });
         })

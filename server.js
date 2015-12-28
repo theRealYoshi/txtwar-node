@@ -70,6 +70,30 @@ require('./controllers/router')(app);
  **/
 
 var amqp = require('amqplib');
+var count = 1;
+amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudamqp.com/mxsdqzbc").then(function(conn){
+  return conn.createChannel().then(function(ch){
+    var scrapeQueue = function(ch, test_message){
+      ch.assertExchange("dead_exchange", "direct", { durable: true }).then(function(){
+        return ch.assertQueue('destination_queue', { durable: true }).then(function(qok){
+          return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
+            return ch.consume(qok.queue, logMessage, {noAck: true}).then(function(){
+              console.log("scraped");
+            });
+          });
+        });
+      })
+    }
+    function logMessage(msg){
+      console.log(" [x] '%s' ", msg.content.toString());
+    }
+    setInterval(function(){
+      var test_message = "TEST " + count;
+      scrapeQueue(ch, test_message);
+      count += 1;
+    }, 60000);
+  });
+});
 
 app.get("/api/amqp", function(req, res, next){
   var action = req.query.action;
@@ -85,13 +109,13 @@ app.get("/api/amqp", function(req, res, next){
               exclusive: true,
               "x-dead-letter-exchange": "dead_exchange",
               "x-dead-letter-routing-key": "destination_queue",
-              "x-expires": 60000 }
+              "x-expires": 30000 }
           };
           return ch.assertQueue("", qOpts);
         });
         exchangeOk = exchangeOk.then(function(queueOk){
           var queue = queueOk.queue;
-          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 30000 }, function(){
+          ch.sendToQueue(queue, new Buffer("this is an amqp Test"),{ expiration: 10000 }, function(){
             return ch.close();
           });
         })
