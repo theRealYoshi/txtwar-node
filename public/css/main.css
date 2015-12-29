@@ -5,7 +5,7 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -259,8 +259,7 @@ th {
 }
 .glyphicon {
   position: relative;
-  top: 50%;
-  transform: translateY(30%);
+  top: 1px;
   display: inline-block;
   font-family: 'Glyphicons Halflings';
   font-style: normal;
@@ -2903,7 +2902,6 @@ select[multiple].input-lg {
   .form-inline .input-group {
     display: inline-table;
     vertical-align: middle;
-    width:700px;
   }
   .form-inline .input-group .input-group-addon,
   .form-inline .input-group .input-group-btn,
@@ -4358,11 +4356,10 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-form .input-group .input-group-addon,
   .navbar-form .input-group .input-group-btn,
   .navbar-form .input-group .form-control {
-    width: 600px;
-    height: 90px;
+    width: auto;
   }
   .navbar-form .input-group > .form-control {
-    width: 600px;
+    width: 100%;
   }
   .navbar-form .control-label {
     margin-bottom: 0;
@@ -4459,7 +4456,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border-color: #23c7aa;
 }
 .navbar-default .navbar-brand {
-  color: #353f44;
+  color: #0099cc;
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
@@ -7367,8 +7364,7 @@ footer .thumb-md:hover {
 }
 span.glyphicon {
   font-size: 1.8em;
-  height: 70px;
-  width: 50px;
+  height: 30px;
 }
 .giphy-image {
   float: left;
@@ -7392,10 +7388,8 @@ span.glyphicon {
   padding: 9px 12px;
 }
 .navbar-form .input-group .form-control {
-  width: 600px;
-  font-size: 54px;
-  text-align: center;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  width: 700px;
+  font-size: 24px;
   border-radius: 10px 0px 0px 10px;
 }
 .input-group-btn:last-child > .btn,
@@ -7999,7 +7993,7 @@ label {
 .keys {
   background-image: url(white_plaster.png);
   width: 700px;
-  height: 900px;
+  height: 700px;
   border: 1px solid grey;
   border-radius: 5%;
   margin-left: auto;
@@ -8011,7 +8005,7 @@ label {
 .keys-container {
   top: 50%;
   position: relative;
-  transform: translateY(-65%);
+  transform: translateY(-50%);
   width: 645px;
   height: 645px;
   margin-left: auto;
@@ -8038,10 +8032,4 @@ label {
 
 .note-key.pressed {
   border: 20px solid grey;
-}
-
-.numberForm {
-  width: 700px;
-  margin-left: auto;
-  margin-right: auto;
 }
