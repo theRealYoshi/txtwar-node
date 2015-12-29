@@ -355,6 +355,16 @@ var Home = (function (_React$Component) {
         'div',
         { className: 'container' },
         _react2.default.createElement(
+          'h1',
+          null,
+          'How long to wait before texting back?'
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Everybody hates the waiting game.'
+        ),
+        _react2.default.createElement(
           'div',
           { className: 'row' },
           _react2.default.createElement(_TxtwarForm2.default, null)
@@ -472,19 +482,11 @@ var Navbar = (function (_React$Component) {
           ),
           _react2.default.createElement(
             _reactRouter.Link,
-            { to: '/', className: 'navbar-brand', onClick: this.handleReRender },
+            { to: 'www.txtwar.com', className: 'navbar-brand' },
             'TXTWAR'
           )
         ),
-        _react2.default.createElement(
-          'div',
-          { id: 'navbar', className: 'navbar-collapse collapse' },
-          _react2.default.createElement(
-            _reactRouter.Link,
-            { to: 'http://txtwar.com', onClick: this.handleReRender },
-            'Txtwar'
-          )
-        )
+        _react2.default.createElement('div', { id: 'navbar', className: 'navbar-collapse collapse' })
       );
     }
   }]);
@@ -592,47 +594,70 @@ var TxtwarForm = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var keypad = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "<<"];
-      var phoneNumber;
+      var phoneNumber, warning;
       if (this.state.searchQuery) {
         phoneNumber = this._formattedNumber();
       } else {
         phoneNumber = "";
+      }
+      if (this.state.unverified) {
+        warning = _react2.default.createElement(
+          'p',
+          null,
+          'Please verify your number at ',
+          _react2.default.createElement(
+            'a',
+            { href: 'https://www.twilio.com/user/account/phone-numbers/verified' },
+            'here'
+          )
+        );
+      } else {
+        warning = "";
       }
 
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'form',
-          { ref: 'searchForm', className: 'navbar-form navbar-left animated', onSubmit: this._handleSubmit.bind(this) },
+          'div',
+          { className: 'numberForm' },
           _react2.default.createElement(
-            'div',
-            { className: 'input-group' },
-            _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: '(000)-000-0000',
-              value: phoneNumber, onChange: _TxtwarFormActions2.default.updateSearchQuery,
-              maxLength: '14' }),
+            'form',
+            { className: 'navbar-form navbar-left animated', onSubmit: this._handleSubmit.bind(this) },
             _react2.default.createElement(
-              'span',
-              { className: 'input-group-btn' },
+              'div',
+              { className: 'input-group' },
+              _react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: '(000)-000-0000',
+                value: phoneNumber, onChange: _TxtwarFormActions2.default.updateSearchQuery,
+                maxLength: '14' }),
               _react2.default.createElement(
-                'button',
-                { className: 'btn btn-default', onClick: this._handleSubmit.bind(this) },
-                _react2.default.createElement('span', { className: 'glyphicon glyphicon-phone' })
+                'span',
+                { className: 'input-group-btn' },
+                _react2.default.createElement(
+                  'button',
+                  { className: 'btn btn-default btn-lg', onClick: this._handleSubmit.bind(this) },
+                  _react2.default.createElement('span', { className: 'glyphicon glyphicon-phone' })
+                )
               )
             )
           )
         ),
         _react2.default.createElement(
           'div',
-          { className: 'keypad-container' },
-          keypad.map((function (key) {
-            return _react2.default.createElement(
-              'button',
-              { className: 'key', onClick: this._handleClick.bind(this), value: key },
-              key
-            );
-          }).bind(this))
-        )
+          { className: 'keys' },
+          _react2.default.createElement(
+            'div',
+            { className: 'keys-container' },
+            keypad.map((function (key) {
+              return _react2.default.createElement(
+                'div',
+                { className: 'note-key', onClick: this._handleClick.bind(this), value: key },
+                key
+              );
+            }).bind(this))
+          )
+        ),
+        warning
       );
     }
   }]);
@@ -851,6 +876,7 @@ var TxtwarFormStore = (function () {
     this.bindActions(_TxtwarFormActions2.default);
     this.searchQuery = '';
     this.validated = false;
+    this.unverified = false;
   }
 
   _createClass(TxtwarFormStore, [{
@@ -889,6 +915,9 @@ var TxtwarFormStore = (function () {
     key: 'onAddPhoneNumberFail',
     value: function onAddPhoneNumberFail(data) {
       toastr.error(data.responseText);
+      if (data.responseText === "Unverified number") {
+        this.unverified = true;
+      }
     }
   }]);
 

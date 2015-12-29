@@ -34,5 +34,4 @@ bower_components
 .DS_Store
 
 # Compiled files
-public/css/*
 public/js/*

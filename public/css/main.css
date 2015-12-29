@@ -5,7 +5,7 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-  font-family: sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -259,7 +259,8 @@ th {
 }
 .glyphicon {
   position: relative;
-  top: 1px;
+  top: 50%;
+  transform: translateY(30%);
   display: inline-block;
   font-family: 'Glyphicons Halflings';
   font-style: normal;
@@ -2902,6 +2903,7 @@ select[multiple].input-lg {
   .form-inline .input-group {
     display: inline-table;
     vertical-align: middle;
+    width:700px;
   }
   .form-inline .input-group .input-group-addon,
   .form-inline .input-group .input-group-btn,
@@ -4356,10 +4358,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-form .input-group .input-group-addon,
   .navbar-form .input-group .input-group-btn,
   .navbar-form .input-group .form-control {
-    width: auto;
+    width: 600px;
+    height: 90px;
   }
   .navbar-form .input-group > .form-control {
-    width: 100%;
+    width: 600px;
   }
   .navbar-form .control-label {
     margin-bottom: 0;
@@ -4452,7 +4455,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #30dbbd;
+  background-color: #0099cc;
   border-color: #23c7aa;
 }
 .navbar-default .navbar-brand {
@@ -7330,8 +7333,8 @@ footer {
   bottom: 0;
   height: 50px;
   width: 100%;
-  color: #0dd5b2;
-  background-color: #fff;
+  color: white;
+  background-color: #0099cc;
   font-size: 20px;
   padding-bottom: 55px;
 }
@@ -7345,13 +7348,13 @@ footer ul li {
   margin-right: 10px;
 }
 footer a {
-  color: #0dd5b2;
+  color: white;
   text-decoration: none;
   float: right;
 }
 footer a:hover,
 footer a:focus {
-  color: #127362;
+  color: white;
   text-decoration: underline;
 }
 footer .thumb-md {
@@ -7364,7 +7367,8 @@ footer .thumb-md:hover {
 }
 span.glyphicon {
   font-size: 1.8em;
-  height: 30px;
+  height: 70px;
+  width: 50px;
 }
 .giphy-image {
   float: left;
@@ -7388,8 +7392,10 @@ span.glyphicon {
   padding: 9px 12px;
 }
 .navbar-form .input-group .form-control {
-  width: 700px;
-  font-size: 24px;
+  width: 600px;
+  font-size: 54px;
+  text-align: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   border-radius: 10px 0px 0px 10px;
 }
 .input-group-btn:last-child > .btn,
@@ -7988,4 +7994,54 @@ label {
   left: 20px;
   -webkit-animation-delay: -500ms;
           animation-delay: -500ms;
+}
+
+.keys {
+  background-image: url(white_plaster.png);
+  width: 700px;
+  height: 900px;
+  border: 1px solid grey;
+  border-radius: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  clear: both;
+  border-style: outset;
+}
+
+.keys-container {
+  top: 50%;
+  position: relative;
+  transform: translateY(-65%);
+  width: 645px;
+  height: 645px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+.note-key {
+  text-align: center;
+  font-size: 24px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 26.4px;
+  color: #525252;
+  width: 200px;
+  height: 200px;
+  margin: 6px;
+  border: 20px solid #B7B7B7;
+  float: left;
+  border-radius: 50%;
+  background-image: url(white_plaster.png);
+  transition: background-color 0.25s;
+}
+
+.note-key.pressed {
+  border: 20px solid grey;
+}
+
+.numberForm {
+  width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }

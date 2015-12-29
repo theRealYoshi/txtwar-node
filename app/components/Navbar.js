@@ -52,12 +52,11 @@ class Navbar extends React.Component {
             <span className='icon-bar'></span>
             <span className='icon-bar'></span>
           </button>
-          <Link to='/' className='navbar-brand' onClick={this.handleReRender}>
+          <Link to='www.txtwar.com' className='navbar-brand'>
             TXTWAR
           </Link>
         </div>
         <div id='navbar' className='navbar-collapse collapse'>
-          <Link to="http://txtwar.com" onClick={this.handleReRender}>Txtwar</Link>
         </div>
       </nav>
     );

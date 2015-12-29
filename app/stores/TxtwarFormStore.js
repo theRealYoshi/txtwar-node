@@ -6,6 +6,7 @@ class TxtwarFormStore {
     this.bindActions(TxtwarFormActions);
     this.searchQuery = '';
     this.validated = false;
+    this.unverified = false;
   }
 
   onUpdateAjaxAnimation(className) {
@@ -38,6 +39,9 @@ class TxtwarFormStore {
 
   onAddPhoneNumberFail(data){
     toastr.error(data.responseText);
+    if (data.responseText === "Unverified number"){
+      this.unverified = true;
+    }
   }
 
 }

@@ -86,12 +86,10 @@ amqp.connect("amqp://mxsdqzbc:CpqLpEM4cnDpw0slWRyEP-P_RaTCoZq4@hyena.rmq.cloudam
     }
     function logMessage(msg){
       if (!msg) { return null; }
-      // we want to get an array of all the scraped
-      // then send to a function which sends out twilio text informing them to text their crush
       var opts = {
         to: msg.content.toString(),
         from: secrets.twilio.number,
-        body: "Text your crush now!"
+        body: "Text them back now!"
       }
       try {
         twilioClient.sendMessage(opts, function(err, response){
@@ -120,23 +118,23 @@ app.post("/api/phonenumbers/", function(req, res, next) {
   var phoneNumber = "+1" + req.body.phonenumber;
   async.waterfall([
     function(callback){
-      try {
-        redis.exists(phoneNumber, function(err, reply){
-          if (reply === 1){
-            res.status(409).send(phoneNumber + ' has already been saved.');
-          } else {
+      redis.exists(phoneNumber, function(err, reply){
+        if (reply === 1){
+          return res.status(409).send(phoneNumber + ' has already been saved.');
+        } else {
+          try {
             console.log('looking up for verification in twilio');
             twilioLookupClient.phoneNumbers(phoneNumber).get(function(err, number){
               if (err) return next(err);
-                if (number){
-                  callback(err, phoneNumber);
-                }
+              if (number){
+                callback(err, phoneNumber);
+              }
             });
+          } catch (e) {
+            res.status(404).send("please choose a valid number");
           }
-        })
-      } catch (e) {
-        res.status(404).send("please choose a valid number");
-      }
+        }
+      });
     },
     function(phoneNumber, callback) {
        try {
@@ -155,6 +153,7 @@ app.post("/api/phonenumbers/", function(req, res, next) {
                body: "Please reply back with this code: " + resend
              }
              twilioClient.sendMessage(options, function(err, response){
+               console.log(err);
                if (err && err.status === 400 && err.code === 21608){
                  return res.status(400).send("Unverified number");
                } else if (err){

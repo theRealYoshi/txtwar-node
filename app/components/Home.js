@@ -30,6 +30,8 @@ class Home extends React.Component {
 
     return (
       <div className='container'>
+        <h1>How long to wait before texting back?</h1>
+        <h3>Everybody hates the waiting game.</h3>
         <div className='row'>
           <TxtwarForm />
         </div>

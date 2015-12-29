@@ -56,32 +56,42 @@ class TxtwarForm extends React.Component  {
 
   render() {
     var keypad = [1,2,3,4,5,6,7,8,9,null,0,"<<"];
-    var phoneNumber;
+    var phoneNumber, warning;
     if (this.state.searchQuery){
       phoneNumber = this._formattedNumber();
     } else {
       phoneNumber = "";
     }
+    if (this.state.unverified){
+      warning = <p>Please verify your number at <a href='https://www.twilio.com/user/account/phone-numbers/verified'>here</a></p>
+    } else {
+      warning = "";
+    }
 
     return (
       <div>
-        <form ref='searchForm' className="navbar-form navbar-left animated" onSubmit={this._handleSubmit.bind(this)}>
-          <div className='input-group'>
-            <input type='text' className='form-control' placeholder="(000)-000-0000"
-              value={phoneNumber} onChange={TxtwarFormActions.updateSearchQuery}
-              maxLength="14"/>
-            <span className='input-group-btn'>
-              <button className='btn btn-default' onClick={this._handleSubmit.bind(this)}><span className='glyphicon glyphicon-phone'></span></button>
-            </span>
-          </div>
-        </form>
-        <div className="keypad-container">
-          {
-            keypad.map(function(key){
-              return <button className="key" onClick={this._handleClick.bind(this)} value={key}>{key}</button>
-            }.bind(this))
-          }
+        <div className="numberForm">
+          <form className="navbar-form navbar-left animated" onSubmit={this._handleSubmit.bind(this)}>
+            <div className='input-group'>
+              <input type='text' className='form-control' placeholder="(000)-000-0000"
+                value={phoneNumber} onChange={TxtwarFormActions.updateSearchQuery}
+                maxLength="14"/>
+              <span className='input-group-btn'>
+                <button className='btn btn-default btn-lg' onClick={this._handleSubmit.bind(this)}><span className='glyphicon glyphicon-phone'></span></button>
+              </span>
+            </div>
+          </form>
         </div>
+        <div className="keys">
+          <div className="keys-container">
+            {
+              keypad.map(function(key){
+                return <div className="note-key" onClick={this._handleClick.bind(this)} value={key}>{key}</div>
+              }.bind(this))
+            }
+          </div>
+        </div>
+        {warning}
       </div>
     );
   }
