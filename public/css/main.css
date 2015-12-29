@@ -8018,11 +8018,10 @@ label {
 }
 .note-key {
   text-align: center;
-  font-size: 24px;
+  font-size: 100px;
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
-  line-height: 26.4px;
   color: #525252;
   width: 200px;
   height: 200px;
@@ -8032,6 +8031,7 @@ label {
   border-radius: 50%;
   background-image: url(white_plaster.png);
   transition: background-color 0.25s;
+  cursor: pointer;
 }
 
 .note-key.pressed {

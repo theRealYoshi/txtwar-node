@@ -570,9 +570,10 @@ var TxtwarForm = (function (_React$Component) {
     }
   }, {
     key: '_handleClick',
-    value: function _handleClick(event) {
-      event.preventDefault();
-      _TxtwarFormActions2.default.updateSearchQueryClick(event.target.value);
+    value: function _handleClick(key) {
+      if (key !== null) {
+        _TxtwarFormActions2.default.updateSearchQueryClick(key);
+      }
     }
   }, {
     key: '_formattedNumber',
@@ -651,8 +652,12 @@ var TxtwarForm = (function (_React$Component) {
             keypad.map((function (key) {
               return _react2.default.createElement(
                 'div',
-                { className: 'note-key', onClick: this._handleClick.bind(this), value: key },
-                key
+                { className: 'note-key', onClick: this._handleClick.bind(this, key) },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  key
+                )
               );
             }).bind(this))
           )

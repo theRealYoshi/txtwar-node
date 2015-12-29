@@ -35,9 +35,10 @@ class TxtwarForm extends React.Component  {
     }
   }
 
-  _handleClick(event) {
-    event.preventDefault();
-    TxtwarFormActions.updateSearchQueryClick(event.target.value);
+  _handleClick(key) {
+    if (key !== null){
+      TxtwarFormActions.updateSearchQueryClick(key);
+    }
   }
 
   _formattedNumber() {
@@ -86,7 +87,11 @@ class TxtwarForm extends React.Component  {
           <div className="keys-container">
             {
               keypad.map(function(key){
-                return <div className="note-key" onClick={this._handleClick.bind(this)} value={key}>{key}</div>
+                return (
+                  <div className="note-key" onClick={this._handleClick.bind(this, key)} >
+                    <span>{key}</span>
+                  </div>
+                )
               }.bind(this))
             }
           </div>
