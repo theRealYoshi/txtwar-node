@@ -51,7 +51,7 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 body {
-  margin: 0;
+  margin-bottom: 100px;
 }
 article,
 aside,
@@ -6877,7 +6877,7 @@ button.toast-close-button {
   background-color: #51A351;
 }
 .toast-error {
-  background-color: #BD362F;
+  background-color: #007399;
 }
 .toast-info {
   background-color: #2F96B4;
@@ -7346,7 +7346,6 @@ html {
   min-height: 100%;
 }
 body {
-  margin-bottom: 220px;
   background-size: 100%;
   -webkit-font-smoothing: antialiased;
 }
@@ -7534,7 +7533,7 @@ span.glyphicon {
   margin: 40px;
 }
 .toast-error {
-  background-color: #1B584E;
+  background-color: #00394d;
 }
 .thumbnail img {
   padding: 6px;
@@ -8037,8 +8036,8 @@ label {
 
 .keys {
   background-image: url(white_plaster.png);
-  width: 700px;
-  height: 900px;
+  width: 550px;
+  height: 730px;
   border: 1px solid grey;
   border-radius: 5%;
   margin-left: auto;
@@ -8050,24 +8049,24 @@ label {
 .keys-container {
   top: 50%;
   position: relative;
-  transform: translateY(-65%);
-  width: 645px;
-  height: 645px;
+  transform: translateY(-50%);
+  width: 95%;
+  height: 95%;
   margin-left: auto;
   margin-right: auto;
 
 }
 .note-key {
   text-align: center;
-  font-size: 100px;
+  font-size: 56px;
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
   color: #525252;
-  width: 200px;
-  height: 200px;
-  margin: 6px;
-  border: 20px solid #B7B7B7;
+  width: 150px;
+  height: 150px;
+  margin: 11px;
+  border: 10px solid #B7B7B7;
   float: left;
   border-radius: 50%;
   background-image: url(white_plaster.png);
@@ -8075,11 +8074,29 @@ label {
   cursor: pointer;
 }
 
-.note-key.pressed {
-  border: 20px solid grey;
+.note-key .pressed {
+  border: 10px solid grey;
 }
+
+.note-key:hover {
+  border: 10px solid grey;
+}
+
 
 .numberForm {
   width: 700px;
   margin: 30px auto;
+}
+
+.warning-container {
+  width: 700px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.header-container {
+  width: 700px;
+  color: #0099cc;
+  margin: 10px auto;
+  text-align: center;
 }

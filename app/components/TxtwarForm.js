@@ -17,7 +17,7 @@ class TxtwarForm extends React.Component  {
   }
 
   componentWillUnmount() {
-    TxtwarFormStore.unlisten(this.onChange);
+    TxtwarFormStore.unlisten(this._onChange);
   }
 
   _onChange(state){
@@ -53,21 +53,16 @@ class TxtwarForm extends React.Component  {
       return "(" + numStr.slice(0,3) + ")-" + numStr.slice(3,6) + "-" + numStr.slice(6);
     }
   }
-  
+
   //add debounce
 
   render() {
-    var keypad = [1,2,3,4,5,6,7,8,9,null,0,"<<"];
+    var keypad = this.state.keypad;
     var phoneNumber, warning;
     if (this.state.searchQuery){
       phoneNumber = this._formattedNumber();
     } else {
       phoneNumber = "";
-    }
-    if (this.state.unverified){
-      warning = <p>Please verify your number at <a href='https://www.twilio.com/user/account/phone-numbers/verified'>here</a></p>
-    } else {
-      warning = "";
     }
 
     return (
@@ -89,6 +84,7 @@ class TxtwarForm extends React.Component  {
             {
               keypad.map(function(key){
                 return (
+                  // pass in props
                   <div className="note-key" onClick={this._handleClick.bind(this, key)} >
                     <span>{key}</span>
                   </div>
@@ -97,7 +93,11 @@ class TxtwarForm extends React.Component  {
             }
           </div>
         </div>
-        {warning}
+        <div className="warning-container">
+          <h4>If your number is unverified with Twilio, please verify your number
+            <a href='https://www.twilio.com/user/account/phone-numbers/verified'> here</a>
+          </h4>
+        </div>
       </div>
     );
   }

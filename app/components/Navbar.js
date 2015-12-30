@@ -56,8 +56,6 @@ class Navbar extends React.Component {
             TXTWAR
           </Link>
         </div>
-        <div id='navbar' className='navbar-collapse collapse'>
-        </div>
       </nav>
     );
   }

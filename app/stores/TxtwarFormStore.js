@@ -7,6 +7,8 @@ class TxtwarFormStore {
     this.searchQuery = '';
     this.validated = false;
     this.unverified = false;
+    this.keypad = [1,2,3,4,5,6,7,8,9,null,0,"<<"];
+    this.heldKeys = [];
   }
 
   onUpdateAjaxAnimation(className) {
@@ -43,7 +45,6 @@ class TxtwarFormStore {
       this.unverified = true;
     }
   }
-
 }
 
 export default alt.createStore(TxtwarFormStore);

@@ -345,24 +345,32 @@ var Home = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var header = _react2.default.createElement(
-        'h1',
-        { className: 'text-center' },
-        'Enter your phone number'
-      );
-
       return _react2.default.createElement(
         'div',
         { className: 'container' },
         _react2.default.createElement(
-          'h1',
-          null,
-          'How long to wait before texting back?'
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'Everybody hates the waiting game.'
+          'div',
+          { className: 'header-container' },
+          _react2.default.createElement(
+            'h1',
+            null,
+            'Everybody Hates the Waiting Game'
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Enter your number.'
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Enter the minutes you want to wait.'
+          ),
+          _react2.default.createElement(
+            'h3',
+            null,
+            'Get a text alert when it\'s time.'
+          )
         ),
         _react2.default.createElement(
           'div',
@@ -485,8 +493,7 @@ var Navbar = (function (_React$Component) {
             { to: 'www.txtwar.com', className: 'navbar-brand' },
             'TXTWAR'
           )
-        ),
-        _react2.default.createElement('div', { id: 'navbar', className: 'navbar-collapse collapse' })
+        )
       );
     }
   }]);
@@ -549,7 +556,7 @@ var TxtwarForm = (function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      _TxtwarFormStore2.default.unlisten(this.onChange);
+      _TxtwarFormStore2.default.unlisten(this._onChange);
     }
   }, {
     key: '_onChange',
@@ -595,26 +602,12 @@ var TxtwarForm = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var keypad = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "<<"];
+      var keypad = this.state.keypad;
       var phoneNumber, warning;
       if (this.state.searchQuery) {
         phoneNumber = this._formattedNumber();
       } else {
         phoneNumber = "";
-      }
-      if (this.state.unverified) {
-        warning = _react2.default.createElement(
-          'p',
-          null,
-          'Please verify your number at ',
-          _react2.default.createElement(
-            'a',
-            { href: 'https://www.twilio.com/user/account/phone-numbers/verified' },
-            'here'
-          )
-        );
-      } else {
-        warning = "";
       }
 
       return _react2.default.createElement(
@@ -651,19 +644,35 @@ var TxtwarForm = (function (_React$Component) {
             'div',
             { className: 'keys-container' },
             keypad.map((function (key) {
-              return _react2.default.createElement(
-                'div',
-                { className: 'note-key', onClick: this._handleClick.bind(this, key) },
+              return(
+                // pass in props
                 _react2.default.createElement(
-                  'span',
-                  null,
-                  key
+                  'div',
+                  { className: 'note-key', onClick: this._handleClick.bind(this, key) },
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    key
+                  )
                 )
               );
             }).bind(this))
           )
         ),
-        warning
+        _react2.default.createElement(
+          'div',
+          { className: 'warning-container' },
+          _react2.default.createElement(
+            'h4',
+            null,
+            'If your number is unverified with Twilio, please verify your number',
+            _react2.default.createElement(
+              'a',
+              { href: 'https://www.twilio.com/user/account/phone-numbers/verified' },
+              ' here'
+            )
+          )
+        )
       );
     }
   }]);
@@ -883,6 +892,8 @@ var TxtwarFormStore = (function () {
     this.searchQuery = '';
     this.validated = false;
     this.unverified = false;
+    this.keypad = [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "<<"];
+    this.heldKeys = [];
   }
 
   _createClass(TxtwarFormStore, [{

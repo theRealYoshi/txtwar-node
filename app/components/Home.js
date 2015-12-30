@@ -26,12 +26,14 @@ class Home extends React.Component {
   }
 
   render() {
-    var header = <h1 className='text-center'>Enter your phone number</h1>;
-
     return (
       <div className='container'>
-        <h1>How long to wait before texting back?</h1>
-        <h3>Everybody hates the waiting game.</h3>
+        <div className="header-container">
+          <h1>Everybody Hates the Waiting Game</h1>
+          <h3>Enter your number.</h3>
+          <h3>Enter the minutes you want to wait.</h3>
+          <h3>Get a text alert when it's time.</h3>
+        </div>
         <div className='row'>
           <TxtwarForm />
         </div>
