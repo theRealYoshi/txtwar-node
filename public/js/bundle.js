@@ -364,7 +364,7 @@ var Home = (function (_React$Component) {
           _react2.default.createElement(
             'h3',
             null,
-            'Enter the minutes you want to wait.'
+            'Text us the minutes you want to wait.'
           ),
           _react2.default.createElement(
             'h3',
@@ -446,28 +446,6 @@ var Navbar = (function (_React$Component) {
       this.setState(state);
     }
   }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      event.preventDefault();
-
-      var searchQuery = this.state.searchQuery.trim();
-      if (searchQuery) {
-        _NavbarActions2.default.clearGifs();
-        _NavbarActions2.default.findGif({
-          searchQuery: searchQuery,
-          history: this.props.history
-        });
-        _NavbarActions2.default.keepInput(searchQuery);
-      } else {
-        _NavbarActions2.default.reRenderPage();
-      }
-    }
-  }, {
-    key: 'handleReRender',
-    value: function handleReRender() {
-      _NavbarActions2.default.reRenderPage();
-    }
-  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -490,7 +468,7 @@ var Navbar = (function (_React$Component) {
           ),
           _react2.default.createElement(
             _reactRouter.Link,
-            { to: 'www.txtwar.com', className: 'navbar-brand' },
+            { to: '/', className: 'navbar-brand' },
             'TXTWAR'
           )
         )

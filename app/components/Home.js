@@ -31,7 +31,7 @@ class Home extends React.Component {
         <div className="header-container">
           <h1>Everybody Hates the Waiting Game</h1>
           <h3>Enter your number.</h3>
-          <h3>Enter the minutes you want to wait.</h3>
+          <h3>Text us the minutes you want to wait.</h3>
           <h3>Get a text alert when it's time.</h3>
         </div>
         <div className='row'>

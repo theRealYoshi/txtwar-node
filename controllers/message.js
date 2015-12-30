@@ -30,7 +30,7 @@ exports.webhook = function(request, response) {
                                { $set: {verified: true} },
                                function(err){
                                  if (err) return next(err);
-                                 var verified = "Verified! Start texting us for when you want a text back";
+                                 var verified = "Verified! DelayTime has been set to 5 minutes. If you want to change this send back a time in minutes. Ex. 61 = 1 hour 1 minute";
                                  sendMessage(phoneNumber, verified);
             })
           } else {
@@ -61,7 +61,6 @@ exports.webhook = function(request, response) {
   } catch (e) {
     console.log(e);
     console.log("an error occurred");
-    // add errors here;
   }
 
   function checkVerification(msg, number){

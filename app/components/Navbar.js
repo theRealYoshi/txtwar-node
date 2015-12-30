@@ -22,26 +22,6 @@ class Navbar extends React.Component {
     this.setState(state);
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-
-    let searchQuery = this.state.searchQuery.trim();
-    if (searchQuery) {
-      NavbarActions.clearGifs();
-      NavbarActions.findGif({
-        searchQuery: searchQuery,
-        history: this.props.history
-      });
-      NavbarActions.keepInput(searchQuery);
-    } else {
-      NavbarActions.reRenderPage();
-    }
-  }
-
-  handleReRender(){
-    NavbarActions.reRenderPage();
-  }
-
   render() {
     return (
       <nav className='navbar navbar-default navbar-static-top'>
@@ -52,7 +32,7 @@ class Navbar extends React.Component {
             <span className='icon-bar'></span>
             <span className='icon-bar'></span>
           </button>
-          <Link to='www.txtwar.com' className='navbar-brand'>
+          <Link to='/' className='navbar-brand'>
             TXTWAR
           </Link>
         </div>

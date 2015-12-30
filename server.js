@@ -155,7 +155,7 @@ app.post("/api/phonenumbers/", function(req, res, next) {
              twilioClient.sendMessage(options, function(err, response){
                console.log(err);
                if (err && err.status === 400 && err.code === 21608){
-                 return res.status(400).send("Unverified number");
+                 return res.status(400).send("Unverified Twilio Number");
                } else if (err){
                  return next(err);
                }
