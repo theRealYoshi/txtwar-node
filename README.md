@@ -31,7 +31,7 @@
   - Receiving a Text message
     - All incoming messages processed immediate, those that have appropriate delay times are sent as messages to CloudAMQP
       - ![AMQPreceived](https://cloud.githubusercontent.com/assets/1275250/12045994/96c8eb66-ae63-11e5-9e40-9ba35bd93e50.png)
-    - CloudAMQP creates queue with message expiration time based on contents of text message
+    - CloudAMQP creates queue with to  message expiration time based on contents of text message
     - Upon message expiration time messages are "dead-lettered" or transferred to one single destination queue
     - Original queue is deleted in CloudAMQP
       - ![queue_deleted](https://cloud.githubusercontent.com/assets/1275250/12046008/ceb79e5a-ae63-11e5-92ea-f39f64681b43.png)
