@@ -38,20 +38,20 @@
 
   - Sending a delayed Text message (PUB/SUB)
     - Worker scrapes the destination queue every minute with SetInterval
-    - ```javascript
-      setInterval(function(){
-        var test_message = "Scrape Count: " + count;
-        scrapeQueue(ch, test_message);
-        count += 1;
-      }, 60000);
-      ```
+      - ```javascript
+        setInterval(function(){
+          var test_message = "Scrape Count: " + count;
+          scrapeQueue(ch, test_message);
+          count += 1;
+        }, 60000);
+        ```
     - If there are messages in the destination queue, the queue is emptied and all messages transferred to the worker
-    - ```javascript
-        return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
-          return ch.consume(qok.queue, logMessage, {noAck: true}).then(function(){
-            console.log(test_message);
-        });
-      ```
+      - ```javascript
+          return ch.bindQueue(qok.queue, 'dead_exchange', "").then(function(){
+            return ch.consume(qok.queue, logMessage, {noAck: true}).then(function(){
+              console.log(test_message);
+          });
+        ```
     - Text message is sent back to phone number owner after the specified delayed time.
       - ![received](https://cloud.githubusercontent.com/assets/1275250/12045974/09aa9090-ae63-11e5-979b-04cff92328c2.PNG)
 
